@@ -1,7 +1,7 @@
 
 // RAQ = REST API Query
 const RAQ_DISTRICT_BORDERS = "https://geo.sv.rostock.de/download/opendata/stadtbereiche/stadtbereiche.json";
-const DISTRIC_BORDERS_BACKUP = "dat/district_borders_hro.json";
+const DISTRIC_BORDERS_BACKUP = "dat/district_borders.json";
 
 const RAQ_FEDERAL_ELECTION_RESULTS = "https://geo.sv.rostock.de/download/opendata/bundestagswahl_%YEAR%/bundestagswahl_%YEAR%_ergebnisse.json";
 const FEDERAL_ELECTION_RESULTS_BACKUP = "dat/federal_election_results_%YEAR%.json";
