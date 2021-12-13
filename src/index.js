@@ -5,6 +5,8 @@
 
 import * as Fetch from "./fetch.js";
 
+const hasProperty = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
+
 // Fetch.get_electoral_borders_from_backup(2002, 2005, 2009, 2013, 2017, 2021)
 //     .then(data => data);
 
@@ -21,21 +23,26 @@ let geojson = null;
 
 
 function highlight_feature (e) {
-
     const layer = e.target;
+    if (hasProperty(layer.feature.properties, "bezeichnung")) {
 
-    layer.setStyle({
-        weight: 2,
-        color: "#FF3333",
-        dashArray: "",
-        fillOpacity: 0.3
-    });
+        layer.setStyle({
+            weight: 2,
+            color: "#FF3333",
+            fillColor: "#FF3333",
+            dashArray: "",
+            fillOpacity: 0.3
+        });
 
-    layer.bringToFront();
+        layer.bringToFront();
+    }
 }
 
 function reset_highlight (e) {
-    geojson.resetStyle(e.target);
+    const layer = e.target;
+    if (hasProperty(layer.feature.properties, "bezeichnung")) {
+        geojson.resetStyle(layer);
+    }
 }
 
 function zoom_to_feature (e) {
@@ -69,7 +76,11 @@ Fetch.get_data_by_year_from_backup(2005)
             tileSize: 256
         }).addTo(map);
 
-        add_geojson_layer(data.electorals[0], {color: "#003399", weight: 2, opacity: 1, fillColor: "transparent"});
-        add_geojson_layer(data.districts, {color: "#ff9933", weight: 2, opacity: 0.8, fillOpacity: 0.2});
+        // data.results
+        // data.districts
+        // data.demographics
+
+        add_geojson_layer(data.electorals[0], {color: "#ff9933", weight: 2, opacity: 1, fillColor: "transparent"});
+        add_geojson_layer(data.districts, {color: "#003399", weight: 2, opacity: 0.8, fillColor: "transparent"});
 
     });

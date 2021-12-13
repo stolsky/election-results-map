@@ -44,7 +44,7 @@ const get_data_by_year = async function (...years) {
         districts: await fetchJSON(DISTRICT_BORDERS_RAQ),
         electorals: await fetch_muliple_resources(ELECTORAL_DISTRICTS_RAQ, "%YEAR%", years),
         demographics: await fetch_muliple_resources(DEMOGRAPHIC_STRUCTURE_RAQ, "%YEAR%", years),
-        results: null// await fetch_muliple_resources(FEDERAL_ELECTION_RESULTS_RAQ, "%YEAR%", years)
+        results: await fetch_muliple_resources(FEDERAL_ELECTION_RESULTS_RAQ, "%YEAR%", years)
     };
 };
 
@@ -53,7 +53,7 @@ const get_data_by_year_from_backup = async function (...years) {
         districts: await fetchJSON(DISTRIC_BORDERS_BACKUP),
         electorals: await fetch_muliple_resources(ELECTORAL_DISTRICTS_BACKUP, "%YEAR%", years),
         demographics: await fetch_muliple_resources(DEMOGRAPHIC_STRUCTURE_BACKUP, "%YEAR%", years),
-        results: null// await fetch_muliple_resources(FEDERAL_ELECTION_RESULTS_BACKUP, "%YEAR%", years)
+        results: await fetch_muliple_resources(FEDERAL_ELECTION_RESULTS_BACKUP, "%YEAR%", years)
     };
 };
 
