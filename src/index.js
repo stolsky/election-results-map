@@ -5,12 +5,12 @@
 
 import * as Fetch from "./fetch.js";
 
-const hasProperty = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
+// const hasProperty = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
 
 // Fetch.get_electoral_borders_from_backup(2002, 2005, 2009, 2013, 2017, 2021)
 //     .then(data => data);
 
-let demographics = null;
+let data_to_plot = null;
 
 const map_canvas = document.createElement("div");
 map_canvas.id = "Map";
@@ -58,7 +58,7 @@ function add_geojson_layer (geojson_data, style, interactive = false) {
         };
     }
 
-    geojson = L.geoJSON(
+    return L.geoJSON(
         geojson_data, {
             style,
             onEachFeature: on_each_feature
@@ -66,9 +66,9 @@ function add_geojson_layer (geojson_data, style, interactive = false) {
     ).addTo(map);
 }
 
-function calculate_color (district_code) {
+function calculate_color_density (district_code) {
 
-    const current = demographics.find(district => district.stadtbereich_code === district_code);
+    const current = data_to_plot.find(district => district.stadtbereich_code === district_code);
     const density = current.bevoelkerungsdichte;
 
     if (density > 4000) {
@@ -90,12 +90,46 @@ function calculate_color (district_code) {
     }
 }
 
-function set_style (feature) {
+function set_style_density (feature) {
     return {
         color: "transparent",
         weight: 2,
         opacity: 1,
-        fillColor: calculate_color(feature.properties.code),
+        fillColor: calculate_color_density(feature.properties.code),
+        fillOpacity: 0.5
+    };
+}
+
+function calculate_color_election (district_code) {
+    const current = data_to_plot.find(district => district.stadtbereich_code === district_code);
+    const turnout = current.wahlbeteiligung;
+
+    if (turnout > 90) {
+        return "#800026";
+    } else if (turnout > 85) {
+        return "#BD0026";
+    } else if (turnout > 80) {
+        return "#E31A1C";
+    } else if (turnout > 75) {
+        return "#FC4E2A";
+    } else if (turnout > 70) {
+        return "#FD8D3C";
+    } else if (turnout > 65) {
+        return "#FEB24C";
+    } else if (turnout > 60) {
+        return "#FED976";
+    } else {
+        return "#FFEDA0";
+    }
+
+}
+
+function set_style_election (feature) {
+    return {
+        color: "transparent",
+        weight: 2,
+        opacity: 1,
+        fillColor: calculate_color_election(feature.properties.code),
         fillOpacity: 0.5
     };
 }
@@ -111,18 +145,18 @@ Fetch.get_data_by_year_from_backup(2005)
             tileSize: 256
         }).addTo(map);
 
-        // data.results
+        // data_to_plot = data.demographics[0];
+        data_to_plot = data.results[0];
 
-        demographics = data.demographics[0];
+        // L.geoJson(data.districts, {style: set_style_density}).addTo(map);
 
-
-        L.geoJson(data.districts, {style: set_style}).addTo(map);
+        L.geoJSON(data.districts, {style: set_style_election}).addTo(map);
 
         add_geojson_layer(
             data.electorals[0],
             {color: "white", weight: 2, opacity: 1, fillColor: "transparent"}
         );
-        add_geojson_layer(
+        geojson = add_geojson_layer(
             data.districts,
             {color: "transparent", weight: 2, opacity: 1, fillColor: "transparent"},
             true
