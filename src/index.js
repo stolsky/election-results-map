@@ -13,7 +13,6 @@ import {TextComponent} from "../lib/jst/dom/textcomponent.js";
 // Fetch.get_electoral_borders_from_backup(2002, 2005, 2009, 2013, 2017, 2021)
 //     .then(data => data);
 
-
 const app = new Application("Open Data Election");
 const title_container = new Container("TitleContainer");
 const title = new TextComponent("Wahlergebnisse", "Title");
