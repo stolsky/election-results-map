@@ -10,6 +10,6 @@ A simple Application, which analyzes election results by the populatin of its re
 ## UML Diagram Tool
 [yEd live](https://www.yworks.com/products/yed-live)
 
-## D2.js
+## D3.js
 another great tool to visualize data.
 [d3.js](https://d3js.org/)
