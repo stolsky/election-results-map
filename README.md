@@ -23,7 +23,7 @@ A simple Application, which analyzes election results by the populatin of its re
    * only need second vote for CDU/CSU, SPD, FDP, Gruene, Linke, AfD
 
 ## 2) Data Processing
-4. analyzation (examine [reduced] data -> data quality criteria)
+4. analysis (examine [reduced] data -> data quality criteria)
    * for missing, wrong attributes, values -> names, data types, 
 5. preparation (adjust data)
    * create identifies if necessary
