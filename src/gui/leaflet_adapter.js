@@ -125,10 +125,10 @@ const create_geojson_map = function (data) {
     //                                 [latitude, longitude], zoom
     map = L.map("MapContainer").setView([54.15, 12.15], 11);
 
-    // L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    //     attribution: "Kartendaten &copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
-    //     tileSize: 256
-    // }).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "Kartendaten &copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
+        tileSize: 256
+    }).addTo(map);
 
     // data_to_plot = data.demographics[0];
 
