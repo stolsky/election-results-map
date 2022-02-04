@@ -38,6 +38,12 @@ A simple Application, which analyzes election results by the populatin of its re
 8. integrate data into GUI
 
 # Tools, Libraries, Frameworks
+  
+[Statistikportal](https://www.statistikportal.de/de/datenbanken)
+  
+[another Rostock database](https://rathaus.rostock.de/Statistik/Stadtbereichskatalog/atlas.html)
+
+[color mixing information](https://github.com/ProfJski/ArtColors)
 
 ## Leaflet
 [homepage](https://leafletjs.com/)
@@ -52,5 +58,9 @@ A simple Application, which analyzes election results by the populatin of its re
 another great tool to visualize data.
 
 [d3.js](https://d3js.org/)
-
+  
+[API](https://github.com/d3/d3/blob/main/API.md)
+  
+[examples](https://www.d3-graph-gallery.com/index.html)
+  
 [tutorial](https://wattenberger.com/)
