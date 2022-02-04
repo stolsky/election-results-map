@@ -1,0 +1,69 @@
+
+@import url(colors.css);
+
+.Welcome {
+    --WELCOME_GAP: 20px;
+
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    padding: var(--WELCOME_GAP);
+    background-color: var(--BACKGROUND_MAIN);
+    color: #000000;
+    cursor: default;
+}
+.Welcome > .Title {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 1.1em;
+    margin-bottom: var(--WELCOME_GAP);
+    font-weight: bold;
+}
+.Welcome .Description {
+    
+}
+.Welcome > .Content.Flex {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    gap: var(--WELCOME_GAP);
+}
+/*.Welcome > .Content.Grid {
+    display: grid;
+    width: 100%;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}*/
+
+.Welcome .Section {
+
+}
+
+.Welcome .Section > .Title {
+
+}
+.Welcome .Section > .Description {
+    
+}
+.Welcome .Section > div {
+    font-size: 0.9em;
+}
+.Welcome .Section > div > button {
+    display: block;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #0000ff;
+    transform-origin: left;
+}
+.Welcome .Section > div > button:hover {
+    transform: scale(1.1);
+}
+.Welcome .Section > span {
+
+}

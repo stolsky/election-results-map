@@ -1,0 +1,37 @@
+:root {
+
+    /*
+        APPLICATION_BACKGROUND
+        APPLICATION_TEXT
+
+        CONTAINER_BACKGROUND
+        CONTAINER_BORDER
+        CONTAINER_SHADOW
+        CONATINER_TEXT
+
+        COMPONENT_BACKGROUND
+        COMPONENT_BORDER
+        COMPONENT_SHADOW
+        COMPONENT_TEXT
+
+
+    */
+
+    /* COBALT2 COLOR THEME */
+    --BACKGROUND_MAIN: #234E6D;
+    --BACKGROUND_LINE: #1F4662;
+
+    --TEXT_COLOR: #e1efff;
+    --HIGHLIGHT: #0050A4;
+    --NOTES_COLOR: #cccccc;
+
+    --CHORDS_COLOR: #ffc600; /* #ffee80 */
+    --METRE_COLOR: #ff9d00; /* #FFB454 */
+    --IDEAS_COLOR: #ff628c;
+    --IDEAS_COLOR2: #A22929;
+
+    --INFO_COLOR: #9effff;
+    --INSTR_COLOR: #3ad900;
+    --INSTR_MARK: #a5ff90;
+
+}
