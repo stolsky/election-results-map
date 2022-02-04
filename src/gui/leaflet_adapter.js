@@ -28,7 +28,6 @@ function reset_highlight (e) {
 
 function zoom_to_feature (e) {
     map.fitBounds(e.target.getBounds(), {maxZoom: 16});
-    console.log(map.getZoom());
 }
 
 function add_geojson_layer (geojson_data, style, interactive = false) {
@@ -120,32 +119,36 @@ function set_style_election (feature) {
     };
 }
 
-Loader.get_data_by_year_from_backup(2005)
-    .then(data => {
 
-        //                                 [latitude, longitude], zoom
-        map = L.map("MapContainer").setView([54.15, 12.15], 11);
+const create_geojson_map = function (data) {
 
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "Kartendaten &copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
-            tileSize: 256
-        }).addTo(map);
+    //                                 [latitude, longitude], zoom
+    map = L.map("MapContainer").setView([54.15, 12.15], 11);
 
-        // // data_to_plot = data.demographics[0];
-        // data_to_plot = data.results[0];
+    // L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    //     attribution: "Kartendaten &copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
+    //     tileSize: 256
+    // }).addTo(map);
 
-        // // L.geoJson(data.districts, {style: set_style_density}).addTo(map);
+    // data_to_plot = data.demographics[0];
 
-        // L.geoJSON(data.districts, {style: set_style_election}).addTo(map);
+    // data_to_plot = data;
+    // L.geoJson(data, {style: set_style_density}).addTo(map);
 
-        // add_geojson_layer(
-        //     data.electorals[0],
-        //     {color: "white", weight: 2, opacity: 1, fillColor: "transparent"}
-        // );
-        // geojson = add_geojson_layer(
-        //     data.districts,
-        //     {color: "transparent", weight: 2, opacity: 1, fillColor: "transparent"},
-        //     true
-        // );
+    // L.geoJSON(data.districts, {style: set_style_election}).addTo(map);
 
-    });
+    // add_geojson_layer(
+    //     data.electorals[0],
+    //     {color: "white", weight: 2, opacity: 1, fillColor: "transparent"}
+    // );
+    geojson = add_geojson_layer(
+        data,
+        {color: "blue", weight: 2, opacity: 1, fillColor: "transparent"},
+        true
+    );
+
+};
+
+export {
+    create_geojson_map
+};
