@@ -12,8 +12,8 @@ let geojson = null;
 function highlight_feature (e) {
     const layer = e.target;
     layer.setStyle({
-        weight: 2,
-        color: "#003399",
+        weight: 0,
+        color: "transparent",
         fillColor: "#003399",
         dashArray: "",
         fillOpacity: 0.3
@@ -130,20 +130,13 @@ const create_geojson_map = function (data) {
         tileSize: 256
     }).addTo(map);
 
-    // data_to_plot = data.demographics[0];
-
-    // data_to_plot = data;
-    // L.geoJson(data, {style: set_style_density}).addTo(map);
-
-    // L.geoJSON(data.districts, {style: set_style_election}).addTo(map);
-
-    // add_geojson_layer(
-    //     data.electorals[0],
-    //     {color: "white", weight: 2, opacity: 1, fillColor: "transparent"}
-    // );
+    add_geojson_layer(
+        data,
+        {color: "blue", weight: 2, opacity: 0.5, fillColor: "transparent"}
+    );
     geojson = add_geojson_layer(
         data,
-        {color: "blue", weight: 2, opacity: 1, fillColor: "transparent"},
+        {color: "transparent", weight: 2, opacity: 1, fillColor: "transparent"},
         true
     );
 

@@ -3,8 +3,9 @@ import {Application} from "../../lib/jst/dom/application.js";
 import {Container} from "../../lib/jst/dom/container.js";
 import {TextComponent} from "../../lib/jst/dom/textcomponent.js";
 import {hasProperty} from "../../lib/jst/native/typecheck.js";
-import {create_geojson_map} from "./leaflet_adapter.js";
 
+import {create_geojson_map} from "./leaflet_adapter.js";
+import * as d3_adapter from "./d3_adapter.js";
 
 const init_gui = function () {
     const app = new Application("Open Data Election");
@@ -14,8 +15,12 @@ const init_gui = function () {
     title_container.append(title, description);
     const map_container = new Container("MapContainer Maximize");
     map_container.setAttribute("id", "MapContainer");
+
+    const chart_pane = new Container();
+    chart_pane.setAttribute("id", "ChartPane");
+
     const menu = new Container("Menu");
-    app.getRootPane().append(map_container, title_container, menu);
+    app.getRootPane().append(map_container, chart_pane, title_container, menu);
 };
 
 const visualize = function (data, options) {
