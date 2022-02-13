@@ -1,44 +1,48 @@
 {
-    "DEMOGRAPHIC_STRUCTURE": {
-        "ONLINE": "https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_2005/bevoelkerungsstruktur_%YEAR%_insgesamt.json",
-        "BACKUP": "dat/demographic_structure_%YEAR%.json",
-        "TYPE": "json"
-    },
-    
-    "DISTRICT_BORDERS": {
-        "ONLINE": "https://geo.sv.rostock.de/download/opendata/stadtbereiche/stadtbereiche.json",
-        "BACKUP": "dat/district_borders.json",
-        "TYPE": "geojson"
-    },
-    
-    "RESULTS_ROSTOCK_DISTRICTS": {
-        "ONLINE": "https://geo.sv.rostock.de/download/opendata/bundestagswahl_%YEAR%/bundestagswahl_%YEAR%_ergebnisse.json",
-        "BACKUP": "dat/federal_election_results_%YEAR%.json",
-        "TYPE": "json"
+
+    "ROSTOCK_DISTRICTS": {
+        "BORDERS": {
+            "ONLINE": "https://geo.sv.rostock.de/download/opendata/stadtbereiche/stadtbereiche.json",
+            "BACKUP": "dat/rostock_districts.geo.json"
+        },
+        "RESULTS": {
+            "ONLINE": "https://geo.sv.rostock.de/download/opendata/bundestagswahl_%YEAR%/bundestagswahl_%YEAR%_ergebnisse.json",
+            "BACKUP": "dat/federal_election_results_%YEAR%.json"
+        },
+        "DEMOGRAPHIC_STRUCTURE": {
+            "ONLINE": "https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_%YEAR%/bevoelkerungsstruktur_%YEAR%_insgesamt.json",
+            "BACKUP": "dat/demographic_structure_%YEAR%.json"
+        }
     },
 
-    "RESULTS_ROSTOCK": {
-        "ONLINE": "",
-        "BACKUP": "",
-        "TYPE": ""
+    "MECKLENBURGVORPOMMERN": {
+        "BORDERS": {
+            "ONLINE": "",
+            "BACKUP": "dat/mecklenburgvorpommern.geo.json"
+        },
+        "RESULTS": {
+            "ONLINE": "",
+            "BACKUP": ""
+        },
+        "DEMOGRAPHIC_STRUCTURE": {
+            "ONLINE": "",
+            "BACKUP": ""
+        }
     },
 
-    "RESULTS_CONSTITUENCY2": {
-        "ONLINE": "",
-        "BACKUP": "",
-        "TYPE": ""
-    },
-
-    "RESULTS_MECKLENBURGVORPOMMERN": {
-        "ONLINE": "",
-        "BACKUP": "",
-        "TYPE": ""
-    },
-
-    "RESULTS_GERMAN": {
-        "ONLINE": "",
-        "BACKUP": "",
-        "TYPE": ""
+    "GERMANY": {
+        "BORDERS": {
+            "ONLINE": "",
+            "BACKUP": "dat/germany.geo.json"
+        },
+        "RESULTS": {
+            "ONLINE": "",
+            "BACKUP": ""
+        },
+        "DEMOGRAPHIC_STRUCTURE": {
+            "ONLINE": "",
+            "BACKUP": ""
+        }
     }
 
 }

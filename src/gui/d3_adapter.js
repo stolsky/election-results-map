@@ -1,45 +1,135 @@
-/* d3 */
+/* global d3 */
 
-// set the dimensions and margins of the graph
-var width = 450;
-var height = 450;
-var margin = 40;
+import {hasProperty} from "../../lib/jst/native/typecheck.js";
 
-// The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-var radius = Math.min(width, height) / 2 - margin
 
-// append the svg object to the div called 'my_dataviz'
-var svg = d3.select("#Chartpane")
-  .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-  .append("g")
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+let tooltip = null;
+let color_scale = null;
 
-// Create dummy data
-var data = {a: 9, b: 20, c:30, d:8, e:12};
+const create_data_map = function (data_map, width, height, container_name) {
 
-// set the color scale
-var color = d3.scaleOrdinal()
-  .domain(data)
-  .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
+    const projection = d3.geoMercator().fitSize([width, height], data_map.borders);
+    const geoGenerator = d3.geoPath().projection(projection);
 
-// Compute the position of each group on the pie:
-var pie = d3.pie()
-  .value(function(d) {return d.value; })
-var data_ready = pie(d3.entries(data))
+    d3.select(container_name)
+        .append("svg").attr("width", width).attr("height", height)
+        .append("g").attr("class", "Map");
 
-// Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-svg
-  .selectAll('whatever')
-  .data(data_ready)
-  .enter()
-  .append('path')
-  .attr('d', d3.arc()
-    .innerRadius(100)         // This is the size of the donut hole
-    .outerRadius(radius)
-  )
-  .attr('fill', function(d){ return(color(d.data.key)) })
-  .attr("stroke", "black")
-  .style("stroke-width", "2px")
-  .style("opacity", 0.7)
+    d3.select(container_name)
+        .append("p")
+        .attr("class", "Name")
+        .text(data_map.borders.features[0].properties.name);
+
+    if (!color_scale) {
+        color_scale = d3.scaleLinear()
+            .domain([0, 1])
+            .range(["lemonchiffon", "salmon", "rebeccapurple", "skyblue"]);
+
+        // const myColor = d3.scaleSequential()
+        //     .interpolator(d3.interpolateInferno)
+        //     .domain([1, 100]);
+    }
+    if (!tooltip) {
+        tooltip = d3.select(".Main")
+            .append("div")
+            .attr("class", "Tooltip");
+    }
+
+    // d3 transition tutorial
+    // https://www.d3-graph-gallery.com/graph/interactivity_transition.html
+
+    const mouse_enter = function (event, features) {
+
+        if (hasProperty(features.properties, "bezeichnung")) {
+            tooltip
+                .text(features.properties.bezeichnung)
+                .style("opacity", 1);
+        }
+
+        d3.selectAll(".District")
+            .transition()
+            .duration(200)
+            .style("opacity", 0.3);
+
+        d3.select(this)
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+    };
+
+    const mouse_leave = function (event) {
+
+        tooltip.style("opacity", 0);
+
+        d3.selectAll(".District")
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+    };
+
+    const mouse_move = function (event) {
+        const [x, y] = d3.pointer(event);
+        // TODO use transform.translate() instead of left & top
+        tooltip
+            .style("left", (x + 10) + "px")
+            .style("top", (y + 80) + "px");
+    };
+
+    const mouse_click = function (event, features) {
+
+        // TODO onclick on self -> deselect
+        d3.selectAll(".District")
+            .transition()
+            .duration(200)
+            .style("fill", "#cccccc");
+        d3.select(this)
+            .transition()
+            .duration(200)
+            .style("fill", "#ffffff");
+
+        // TODO
+        // trigger recolor
+    };
+
+    // choropleth tutorial
+    // https://www.d3-graph-gallery.com/graph/choropleth_basic.html
+
+    const geojson_map = d3.select(container_name + " .Map")
+        .selectAll("path")
+        .data(data_map.borders.features)
+        .join("path")
+        .attr("d", geoGenerator)
+        .attr("class", "District")
+        // TODO instead of "code" use key_mapping variable
+        // .attr("id", d => d.features.properties.code)
+        .on("mouseenter", mouse_enter)
+        .on("mouseleave", mouse_leave)
+        .on("mousemove", mouse_move)
+        .on("click", mouse_click);
+
+    return geojson_map;
+};
+
+
+// map.selectAll("path")
+//     .data(data.votings, d => d.C)
+//     .join()
+//     .attr("fill", d => {
+//         console.log(d);
+//         // return colorScale(d.total);
+//         return false;
+//     });
+
+/*
+function update(option) {
+    svg.selectAll("path").interrupt().transition()
+        .duration(1000).ease(d3.easeLinear)
+        .attrTween("d", projectionTween(projection, projection = option.projection))
+    d3.timeout(loop, 1000)
+}
+*/
+
+
+export {
+    create_data_map
+};

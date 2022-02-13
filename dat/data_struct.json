@@ -1,0 +1,18 @@
+{
+    "ROSTOCK": {
+        "OPENDATA_URL": "https://geo.sv.rostock.de/download/opendata/",
+
+        "DEMOGRAPHIC_STRUCTURE_REST": "",
+        "DEMOGRAPHIC_STRUCTURE_BACKUP": "demographic_structure_%YEAR%.json",
+
+        "DISTRICT_BORDERS_HRO_REST": "stadtbereiche/stadtbereiche.json",
+        "DISTRIC_BORDERS_BACKUP": "district_borders.json",
+
+        "ELECTORAL_DISTRICTS_REST": "bundestagswahl_%YEAR%/bundestagswahl_%YEAR%_wahlbezirke.json",
+        "ELECTORAL_DISTRICTS_BACKUP": "electoral_districts_%YEAR%.json",
+
+        "FEDERAL_ELECTION_RESULTS_REST": "bundestagswahl_%YEAR%/bundestagswahl_%YEAR%_ergebnisse.json",
+        "FEDERAL_ELECTION_RESULTS_BACKUP": "federal_election_results_%YEAR%.json"
+    }
+    
+}

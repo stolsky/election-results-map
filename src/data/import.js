@@ -11,6 +11,8 @@
 // }
 // rest_api_reuqest("bundestagswahl");
 
+import {hasProperty, isString} from "../../lib/jst/native/typecheck.js";
+
 
 const QUERY_TYPE = {
     ONLINE: "ONLINE",
@@ -18,45 +20,61 @@ const QUERY_TYPE = {
 };
 
 const fetch_json = async (url) => {
-    const response = await fetch(url, {mode: "same-origin"});
-    return response.json();
+    if (isString(url)) {
+        const response = await fetch(url, {mode: "same-origin"});
+        return response.json();
+    } else {
+        return null;
+    }
 };
 
-const get_data = async function (year, query_type) {
+// TODO use d3.json & d3.csv ?
+// https://www.tutorialsteacher.com/d3js/loading-data-from-file-in-d3js
+
+/**
+ * @param {integer} year
+ * @param {Object} options
+ * @returns {Object} `{city_district: {map, population, votings},
+        federal_state: {map, population, votings},
+        country: {map, population, votings}}`
+ */
+const import_data_by_year = async function (year, options) {
 
     return fetch_json("dat/files_index.json")
-    .then(results => {
-        const promises = [];
-        if (results instanceof Object) {
-            const query_base = (query_type === QUERY_TYPE.ONLINE) ? "ONLINE" : "BACKUP";
+        .then(async files_index => {
 
-            Object.keys(results).forEach(key => {
+            if (files_index instanceof Object) {
 
-                let query_object = results[key];
+                const source = (hasProperty(options, "query") && options.query === QUERY_TYPE.ONLINE) ? "ONLINE" : "BACKUP";
 
-                let fetch_method = null;
-                if (query_object.TYPE === "json" || query_object.TYPE === "geojson") {
-                    fetch_method = fetch_json;
-                }
-                // else if TYPE === "csv"
+                const regions = ["ROSTOCK_DISTRICTS", "MECKLENBURGVORPOMMERN", "GERMANY"];
+                const categories = ["RESULTS", "DEMOGRAPHIC_STRUCTURE", "BORDERS"];
 
-                let current_query = query_object[query_base];
-                if (current_query !== "" && fetch_method instanceof Function) {
-                    if (current_query.includes("%YEAR%")) {
-                        current_query = current_query.replace(/%YEAR%/, year);
-                    }
-                    promises.push(fetch_method(current_query));
-                }
-            });    
-        }
+                const to_be_loaded = [];
+                regions.forEach(region => {
+                    categories.forEach(category => {
+                        const query = files_index[region][category][source];
+                        to_be_loaded.push(fetch_json(query.replace(/%YEAR%/g, year)));
+                    });
+                });
+                const results = await Promise.all(to_be_loaded);
 
-        return Promise.all(promises);//.then(..)
-    })
-    .catch(error => console.error("Error while loading data.", error));
-    
+                return {
+                    city_district: {votings: results[0], population: results[1], borders: results[2]},
+                    federal_state: {votings: results[3], population: results[4], borders: results[5]},
+                    country: {votings: results[6], population: results[7], borders: results[8]}
+                };
+
+            } else {
+                return null;
+            }
+        })
+        .catch(error => console.error("Error while loading data.", error));
+
 };
 
+
 export {
-    get_data,
+    import_data_by_year,
     QUERY_TYPE
 };

@@ -1,39 +1,67 @@
 
 import {Application} from "../../lib/jst/dom/application.js";
 import {Container} from "../../lib/jst/dom/container.js";
+import {create_data_map} from "./d3_adapter.js";
 import {TextComponent} from "../../lib/jst/dom/textcomponent.js";
-import {hasProperty} from "../../lib/jst/native/typecheck.js";
 
-import {create_geojson_map} from "./leaflet_adapter.js";
-import * as d3_adapter from "./d3_adapter.js";
+const map_containers = [];
 
-const init_gui = function () {
+const init = function (options) {
+
     const app = new Application("Open Data Election");
-    const title_container = new Container("TitleContainer");
+    const main_container = new Container("Main Maximize");
+    app.getRootPane().addComponent(main_container);
+
     const title = new TextComponent("Wahlergebnisse", "Title");
     const description = new TextComponent("Visuelle Darstellung der Wahlergebnisse 2005", "Description");
+    const title_container = new Container("TitleContainer");
     title_container.append(title, description);
-    const map_container = new Container("MapContainer Maximize");
-    map_container.setAttribute("id", "MapContainer");
+    main_container.addComponent(title_container);
 
-    const chart_pane = new Container();
-    chart_pane.setAttribute("id", "ChartPane");
-
-    const menu = new Container("Menu");
-    app.getRootPane().append(map_container, chart_pane, title_container, menu);
-};
-
-const visualize = function (data, options) {
-    init_gui();
-    data.forEach(dataset => {
-        if (hasProperty(dataset, "type") && dataset.type === "FeatureCollection") {
-            create_geojson_map(dataset);
-        } else {
-            // visualize data
-        }
+    const map_container_class_name = ["CityDistrict", "FederalState", "Country"];
+    map_container_class_name.forEach(map_class_name => {
+        const map_name = new TextComponent(null, "Name");
+        const map_container = new Container("MapContainer " + map_class_name);
+        map_containers.push({class_name: map_class_name, self: map_container, unused: true});
+        map_container.addComponent(map_name);
+        main_container.addComponent(map_container);
     });
+
 };
+
+/** Adds the map with its data to the next free map container.
+ *
+ * @param {Object} data
+ * @param {Object} options
+ */
+const add_data_map = function (data, options) {
+
+    const next_free_container = map_containers.find(container => container.unused);
+
+    if (next_free_container) {
+
+        let size = null;
+        size = next_free_container.self.getOffsetSize();
+
+        create_data_map(
+            data,
+            size.width - 20,
+            size.height - 20,
+            "." + next_free_container.class_name
+        );
+
+        next_free_container.unused = false;
+    }
+
+};
+
+const set_key_mapping = function (key_mapping) {
+
+};
+
 
 export {
-    visualize
+    add_data_map,
+    init,
+    set_key_mapping
 };
