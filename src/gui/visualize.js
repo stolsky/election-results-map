@@ -55,13 +55,8 @@ const add_data_map = function (data, options) {
 
 };
 
-const set_key_mapping = function (key_mapping) {
-
-};
-
 
 export {
     add_data_map,
-    init,
-    set_key_mapping
+    init
 };
