@@ -30,7 +30,7 @@ const create_data_map = function (data_map, width, height, container_name) {
         //     .domain([1, 100]);
     }
     if (!tooltip) {
-        tooltip = d3.select(".Main")
+        tooltip = d3.select(".AppBody")
             .append("div")
             .attr("class", "Tooltip");
     }

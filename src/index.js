@@ -8,38 +8,54 @@
 // https://regionalatlas.statistikportal.de/#
 
 
-import * as adjust from "./data/adjust.js";
-import * as analyze from "./data/analyze.js";
-import * as evaluate from "./data/evaluate.js";
-import * as visualize from "./gui/visualize.js";
-
-import {import_data_by_year, QUERY_TYPE} from "./data/import.js";
+import * as Adjustment from "./data/adjustment.js";
+import * as Analysis from "./data/analysis.js";
+import * as Evaluation from "./data/evaluation.js";
+import * as Import from "./data/import.js";
+import * as Visualization from "./gui/visualization.js";
 
 
 // pipeline
-import_data_by_year(2005, {query: QUERY_TYPE.BACKUP})
-    .then(data => analyze(data, {}))
-    .then(results => {
+Import.get_election_results_by_year(2005, {query: Import.SOURCE.BACKUP})
+    .then(data => {
+
+        // Analysis. ... (data, {}))
+
+        return data;
+    })
+    .then(data => {
 
         // key mapping like "code"->"id", "bezeichnung"->"name"
         // use generic key names used in evaluate and visualize
 
+        Adjustment.replace_keys(
+            data,
+            // "city_districts.borders.features.properties.code:id",
+            // "city_districts.borders.features.properties.bezeichnung:name",
+            "city_districts.votings.stadtbereich_code:id",
+            "city_districts.votings.stadtbereich_bezeichnung:name"
+        );
+
         // bezeichnung -> name
-        // adjust.replace_keys(results)
-        // 
-        // adjust.replace_keys(results.votings, "stadtbereich_code:code", "stadtbereich_bezeichnung:bezeichnung");
-        // adjust.restructure()
-        // adjust.replace_keys(results.population, "stadtbereich_code:code", "stadtbereich_bezeichnung:bezeichnung");
+        // Adjustment.replace_keys(results)
+        // Adjustment.replace_keys(results.votings, "stadtbereich_code:code", "stadtbereich_bezeichnung:bezeichnung");
+        // Adjustment.restructure()
+        // Adjustment.replace_keys(results.population, "stadtbereich_code:code", "stadtbereich_bezeichnung:bezeichnung");
 
-        return results;
+        return data;
     })
-    .then(results => evaluate(results, {}))
-    .then(results => {
+    .then(data => {
 
-        visualize.init();
+        // Evaluation. ...(results, {}))
 
-        visualize.add_data_map(results.city_district);
-        visualize.add_data_map(results.federal_state);
-        visualize.add_data_map(results.country);
+        return data;
+    })
+    .then(data => {
+
+        Visualization.init({area: "a b,a c", cols: "70% 30%"});
+
+        Visualization.add_data_map(data.city_districts);
+        Visualization.add_data_map(data.federal_state);
+        Visualization.add_data_map(data.country);
 
     });

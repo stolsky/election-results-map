@@ -1,14 +1,26 @@
 
 @import url(../lib/jst/dom/gui.css);
 
-.Main {
-    display: grid;
-    grid-template-areas: "title title" "citymap statemap" "citymap countrymap";
-    grid-template-columns: 70% 30%;
-    grid-template-rows: min-content 1fr 1fr;
+.AppHeader {
+    padding: 5px;
+    height: calc(10% - 10px);
+    display: flex;
+    flex-flow: column;
+}
+.AppHeader .Title {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1.5em;
 }
 
-.Main .Tooltip {
+.AppBody {
+    display: grid;
+    /* width: calc(100% - 10px); */
+    height: calc(90% - 10px);
+    padding: 5px;
+}
+
+.AppBody .Tooltip {
     position: absolute;
     opacity: 0;
     background-color: #ffffff;
@@ -17,39 +29,15 @@
     padding: 5px;
 }
 
-.Main .TitleContainer {
-    /* background: #f00; */
-
-    grid-area: title;
-    padding: 5px;
-}
-.Main .TitleContainer .Title {
-    display: block;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 1.5em;
+.AppBody .MapContainer {
+    
 }
 
-.Main .MapContainer p {
+.AppBody .MapContainer p {
     margin-top: -10px;
 }
-.Main .MapContainer.CityDistrict {
-    /* background: #0f0; */
 
-    grid-area: citymap;
-}
-.Main .MapContainer.FederalState {
-    /* background: #00f; */
-
-    grid-area: statemap;
-}
-.Main .MapContainer.Country {
-    /* background: #0ff; */
-
-    grid-area: countrymap;
-}
-
-.Main .Map path {
+.AppBody .MapContainer .Map path {
     stroke: #000;
     stroke-width: 2px;
     fill: #cccccc;

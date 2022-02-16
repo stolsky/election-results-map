@@ -14,10 +14,10 @@
 import {hasProperty, isString} from "../../lib/jst/native/typecheck.js";
 
 
-const QUERY_TYPE = {
+const SOURCE = Object.freeze({
     ONLINE: "ONLINE",
     BACKUP: "BACKUP"
-};
+});
 
 const fetch_json = async (url) => {
     if (isString(url)) {
@@ -38,14 +38,14 @@ const fetch_json = async (url) => {
         federal_state: {map, population, votings},
         country: {map, population, votings}}`
  */
-const import_data_by_year = async function (year, options) {
+const get_election_results_by_year = async function (year, options) {
 
     return fetch_json("dat/files_index.json")
         .then(async files_index => {
 
             if (files_index instanceof Object) {
 
-                const source = (hasProperty(options, "query") && options.query === QUERY_TYPE.ONLINE) ? "ONLINE" : "BACKUP";
+                const source = (hasProperty(options, "query") && options.query === SOURCE.ONLINE) ? "ONLINE" : "BACKUP";
 
                 const regions = ["ROSTOCK_DISTRICTS", "MECKLENBURGVORPOMMERN", "GERMANY"];
                 const categories = ["RESULTS", "DEMOGRAPHIC_STRUCTURE", "BORDERS"];
@@ -60,7 +60,7 @@ const import_data_by_year = async function (year, options) {
                 const results = await Promise.all(to_be_loaded);
 
                 return {
-                    city_district: {votings: results[0], population: results[1], borders: results[2]},
+                    city_districts: {votings: results[0], population: results[1], borders: results[2]},
                     federal_state: {votings: results[3], population: results[4], borders: results[5]},
                     country: {votings: results[6], population: results[7], borders: results[8]}
                 };
@@ -75,6 +75,6 @@ const import_data_by_year = async function (year, options) {
 
 
 export {
-    import_data_by_year,
-    QUERY_TYPE
+    SOURCE,
+    get_election_results_by_year
 };
