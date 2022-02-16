@@ -71,8 +71,8 @@ const create_data_map = function (data_map, width, height, container_name) {
         const [x, y] = d3.pointer(event);
         // TODO use transform.translate() instead of left & top
         tooltip
-            .style("left", (x + 10) + "px")
-            .style("top", (y + 80) + "px");
+            .style("left", (x + 15) + "px")
+            .style("top", (y + 90) + "px");
     };
 
     const mouse_click = function (event, features) {
