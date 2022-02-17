@@ -69,3 +69,8 @@ another great tool to visualize data.
 [examples](https://www.d3-graph-gallery.com/index.html)
   
 [tutorial](https://wattenberger.com/)
+
+### importing csv via 'd3.csv(...)'
+* https://www.tutorialsteacher.com/d3js/loading-data-from-file-in-d3js#d3.csv
+* https://gist.github.com/jfreels/6814721
+* https://d3-wiki.readthedocs.io/zh_CN/master/CSV/
