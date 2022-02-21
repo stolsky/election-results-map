@@ -14,28 +14,33 @@ A simple Application, which analyzes election results by the populatin of its re
 4. create iterations and its tasks
 5. for each task create a new branch
 
-# General workflow of the Application
+# General workflow of the Application / Pipeline
 
-## 1) Data Collection
+## 1) Collection
 1. import data from local disk or from web via REST API
+   * json and csv files
 2. parse data (into javascript objects to work with)
-3. filter and reduce data to necessary parts
-   * only need second vote for CDU/CSU, SPD, FDP, Gruene, Linke, AfD
 
-## 2) Data Processing
-4. analysis (examine [reduced] data -> data quality criteria)
-   * for missing, wrong attributes, values -> names, data types, 
-5. preparation (adjust data)
-   * create identifies if necessary
-   * unify attribute names
-   * add/change missing attributes, values, wrong data types, precision, etc...
-   * add dummy value if attribute is necessary else check with hasOwnProperty method
-6. evaluate data
-   * compare, aggregate the data (prepare for visualization)
-   * selection, range, data types, names, etc..
-## 3) Data Visualization
-7. visualize the data using certain libraries as d3.js and leaflet
-8. integrate data into GUI
+## 2) Analysis (according to Information Quality Criteria)
+* search for missing, wrong attributes, values -> names, data types
+  
+## 3) Adjustments (according to Evaluation and Visualization)
+* create identifier if necessary
+* replace and unify attribute names
+  * use generic names
+* add missing attributes, values
+* correct wrong data types, precision, etc...
+* add dummy value if attribute is necessary else check with hasOwnProperty method
+ 
+## 4) Evaluation
+* filter and reduce data to necessary parts
+  * only need second vote for CDU/CSU, SPD, FDP, Gruene, Linke, AfD
+* compare, aggregate the data (prepare for visualization)
+* selection, range, data types, names, etc..
+ 
+## 5) Visualization
+* visualize the data using certain libraries as d3.js
+* integrate data into GUI
 
 # Tools, Libraries, Frameworks
   
@@ -64,3 +69,8 @@ another great tool to visualize data.
 [examples](https://www.d3-graph-gallery.com/index.html)
   
 [tutorial](https://wattenberger.com/)
+
+### importing csv via 'd3.csv(...)'
+* https://www.tutorialsteacher.com/d3js/loading-data-from-file-in-d3js#d3.csv
+* https://gist.github.com/jfreels/6814721
+* https://d3-wiki.readthedocs.io/zh_CN/master/CSV/

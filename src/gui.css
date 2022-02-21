@@ -1,6 +1,48 @@
 
 @import url(../lib/jst/dom/gui.css);
 
-#MapContainer {
+.AppHeader {
+    padding: 5px;
+    height: calc(10% - 10px);
+    display: flex;
+    flex-flow: column;
+}
+.AppHeader .Title {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1.5em;
+}
+.AppHeader .Subitle {
+    /* font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1.5em; */
+}
 
+.AppBody {
+    display: grid;
+    /* width: calc(100% - 10px); */
+    height: calc(90% - 10px);
+    padding: 5px;
+}
+
+.AppBody .Tooltip {
+    position: absolute;
+    opacity: 0;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.AppBody .MapContainer {
+    
+}
+
+.AppBody .MapContainer p {
+    margin-top: -10px;
+}
+
+.AppBody .MapContainer .Map path {
+    stroke: #000;
+    stroke-width: 2px;
 }
