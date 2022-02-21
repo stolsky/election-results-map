@@ -16,6 +16,7 @@ import * as Visualization from "./gui/visualization.js";
 
 
 // pipeline
+// TODO improve Import.get_data by adding files names or the "files_index" file
 Import.get_election_results_by_year(2005, {query: Import.SOURCE.BACKUP})
     .then(data => {
 
@@ -36,10 +37,18 @@ Import.get_election_results_by_year(2005, {query: Import.SOURCE.BACKUP})
             "city_districts.votings.stadtbereich_bezeichnung:name"
         );
 
+        // restructure(data, )
+        // "zweitstimmenanteile_cdu": 19.9,"zweitstimmenanteile_die_linke": 28.3,"zweitstimmenanteile_spd": 38.8,"zweitstimmenanteile_gruene": 3.6,"zweitstimmenanteile_fdp": 4.8
+        // "votings = [{key: "cdu", value: "19.9"}, {key: "spd", value: 38.8}];"
+        // "parties" = [{id: "cdu", name: "Union", "color": "#000000"}]
+
         // bezeichnung -> name
         // Adjustment.replace_keys(results)
         // Adjustment.replace_keys(results.votings, "stadtbereich_code:code", "stadtbereich_bezeichnung:bezeichnung");
-        // Adjustment.restructure()
+
+        // TODO FIX PROPRIETARY METHOD
+        Adjustment.restructure(data.city_districts.votings);
+
         // Adjustment.replace_keys(results.population, "stadtbereich_code:code", "stadtbereich_bezeichnung:bezeichnung");
 
         return data;
@@ -52,10 +61,10 @@ Import.get_election_results_by_year(2005, {query: Import.SOURCE.BACKUP})
     })
     .then(data => {
 
-        Visualization.init({area: "a b,a c", cols: "70% 30%"});
+        Visualization.init({title: "Wahlergebnisse 2005", subtitle: "Visuelle Darstellung der Wahlergebnisse", area: "a b,a c", cols: "70% 30%"});
 
-        Visualization.add_data_map(data.city_districts);
-        Visualization.add_data_map(data.federal_state);
-        Visualization.add_data_map(data.country);
+        Visualization.add_data_map(data.city_districts, {description: "Rostock, Stadtbereiche"});
+        Visualization.add_data_map(data.federal_state, {description: "Mecklenburg-Vorpommern"});
+        Visualization.add_data_map(data.country, {description: "Deutschland"});
 
     });

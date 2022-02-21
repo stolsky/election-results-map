@@ -50,6 +50,9 @@ const get_election_results_by_year = async function (year, options) {
                 const regions = ["ROSTOCK_DISTRICTS", "MECKLENBURGVORPOMMERN", "GERMANY"];
                 const categories = ["RESULTS", "DEMOGRAPHIC_STRUCTURE", "BORDERS"];
 
+                const result = d3.csv("dat/btw2005_kerg.csv");
+                console.log(result);
+
                 const to_be_loaded = [];
                 regions.forEach(region => {
                     categories.forEach(category => {

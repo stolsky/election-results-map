@@ -12,6 +12,11 @@
     text-transform: uppercase;
     font-size: 1.5em;
 }
+.AppHeader .Subitle {
+    /* font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1.5em; */
+}
 
 .AppBody {
     display: grid;
@@ -40,5 +45,4 @@
 .AppBody .MapContainer .Map path {
     stroke: #000;
     stroke-width: 2px;
-    fill: #cccccc;
 }

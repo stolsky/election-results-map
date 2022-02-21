@@ -9,11 +9,16 @@ const map_containers = [];
 
 const init = function (options) {
 
-    const title = new TextComponent("Wahlergebnisse", "Title");
-    const description = new TextComponent("Visuelle Darstellung der Wahlergebnisse 2005", "Description");
-
+    let title = null;
+    if (hasProperty(options, "title") && isString(options.title)) {
+        title = new TextComponent(options.title, "Title");
+    }
+    let subtitle = null;
+    if (hasProperty(options, "subtitle") && isString(options.subtitle)) {
+        subtitle = new TextComponent(options.subtitle, "Subtitle");
+    }
     const header = new Container("AppHeader");
-    header.append(title, description);
+    header.append(title, subtitle);
 
     const body = new Container("AppBody");
     const map_container_class_names = [];
@@ -76,14 +81,16 @@ const add_data_map = function (data, options) {
 
     if (next_free_container) {
 
-        let size = null;
-        size = next_free_container.self.getOffsetSize();
+        let containersize = null;
+        containersize = next_free_container.self.getOffsetSize();
+
+        // "push" size object to current options
+        Object.assign(options, {size: {width: containersize.width - 20, height: containersize.height - 20}});
 
         create_data_map(
             data,
-            size.width - 20,
-            size.height - 20,
-            "." + next_free_container.class_name
+            "." + next_free_container.class_name,
+            options
         );
 
         next_free_container.unused = false;
