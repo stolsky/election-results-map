@@ -34,22 +34,16 @@ Import.get_election_results_by_year(2005, {query: Import.SOURCE.BACKUP})
             // "city_districts.borders.features.properties.code:id",
             // "city_districts.borders.features.properties.bezeichnung:name",
             "city_districts.votings.stadtbereich_code:id",
-            "city_districts.votings.stadtbereich_bezeichnung:name"
+            "city_districts.votings.stadtbereich_bezeichnung:name",
+            "city_districts.votings.wahlbeteiligung:turnout"
         );
 
-        // restructure(data, )
+        // "parties" = [{id: "cdu", name: "Union", "color": "#000000"}] -> dat/parties.json
+
         // "zweitstimmenanteile_cdu": 19.9,"zweitstimmenanteile_die_linke": 28.3,"zweitstimmenanteile_spd": 38.8,"zweitstimmenanteile_gruene": 3.6,"zweitstimmenanteile_fdp": 4.8
         // "votings = [{key: "cdu", value: "19.9"}, {key: "spd", value: 38.8}];"
-        // "parties" = [{id: "cdu", name: "Union", "color": "#000000"}]
-
-        // bezeichnung -> name
-        // Adjustment.replace_keys(results)
-        // Adjustment.replace_keys(results.votings, "stadtbereich_code:code", "stadtbereich_bezeichnung:bezeichnung");
-
         // TODO FIX PROPRIETARY METHOD
         Adjustment.restructure(data.city_districts.votings);
-
-        // Adjustment.replace_keys(results.population, "stadtbereich_code:code", "stadtbereich_bezeichnung:bezeichnung");
 
         return data;
     })

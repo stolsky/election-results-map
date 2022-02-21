@@ -6,28 +6,20 @@ const replace_keys = function (data, ...keys) {
 
     keys.forEach(key => {
         key = key.split(":");
-        const props = key[0].split(".");
+        const path = key[0].split(".");
+        const new_key = key[1];
+        const old_key = path.pop();
 
-        let obj = data;
-        props.forEach(current_prop => {
-            obj = obj[current_prop];
-            if (obj instanceof Array) {
-                // console.log(obj);
-            }
+        let selection = data;
+        path.forEach(property_name => {
+            selection = selection[property_name];
         });
-    });
+        selection.forEach(element => {
+            element[new_key] = element[old_key];
+            delete element[old_key];
+        });
 
-    // if (keys instanceof Array) {
-    //     keys.forEach(key => {
-    //         const [old_key, new_key] = key.split(":");
-    //         data.forEach(dataset => {
-    //             if (hasProperty(dataset, old_key)) {
-    //                 dataset[new_key] = dataset[old_key];
-    //                 delete dataset[old_key];
-    //             }
-    //         });
-    //     });
-    // }
+    });
 
 };
 

@@ -6,10 +6,14 @@ import {calculate_distance} from "../data/evaluation.js";
 
 
 let tooltip = null;
-let color_scale = null;
+
+let distance_scale = null;
+let turnout_scale = null;
+let density_scale = null;
+
 const Data_Store = new Cache();
 
-const calculate_color_from_votings = (votings1, votings2) => color_scale(
+const calculate_color_from_votings = (votings1, votings2) => distance_scale(
     calculate_distance(
         votings1.map(result => result.value),
         votings2.map(result => result.value)
@@ -74,6 +78,15 @@ const mouse_click = function (event, features) {
         });
 };
 
+// const handle_zoom = function (event) {
+//     d3.select("svg g")
+//         .attr("transform", event.transform);
+// };
+
+// const zoom = d3.zoom()
+//     .on("zoom", handle_zoom);
+
+
 const create_data_map = function (dataset, container_class_name, options) {
 
     // set dimensions if passed as aparameter via options
@@ -95,6 +108,8 @@ const create_data_map = function (dataset, container_class_name, options) {
         .append("svg").attr("width", width).attr("height", height)
         .append("g").attr("class", "Map");
 
+    // d3.select("svg").call(zoom);
+
     // create description container and insert description text
     const description = (hasProperty(options, "description") && isString(options.description))
         ? options.description : null;
@@ -103,11 +118,17 @@ const create_data_map = function (dataset, container_class_name, options) {
         .attr("class", "Name")
         .text(description);
 
-    // create color scale if not available
-    if (!color_scale) {
-        color_scale = d3.scaleSequential(d3.interpolate("white", "purple"))
-            .domain([0, 19]);
+    // create color scales if not available
+    if (!distance_scale) {
+        distance_scale = d3.scaleSequential(d3.interpolate("white", "purple"))
+            .domain([0, 50]);
     }
+    if (!turnout_scale) {
+        turnout_scale = d3.scaleSequential()
+            .domain([50, 90])
+            .interpolator(d3.interpolateRdYlGn);
+    }
+
     // create tooltip if not available
     if (!tooltip) {
         tooltip = d3.select(".AppBody")
@@ -123,13 +144,26 @@ const create_data_map = function (dataset, container_class_name, options) {
         .attr("d", geoGenerator)
         .attr("class", "District")
         .attr("fill", d => {
+
+            let scale_value = 0;
+
             if (hasProperty(d.properties, "code")) {
+
                 const current_code = d.properties.code;
-                const current_district = dataset.votings.find(district => district.stadtbereich_code === current_code);
+                const current_district = dataset.votings.find(district => district.id === current_code);
+
                 // store additional data, which cannot be bind to svg elements in a cache
-                Data_Store.setItem(current_code, {votings: current_district.results});
+                Data_Store.setItem(
+                    current_code,
+                    {
+                        votings: current_district.results,
+                        turnout: current_district.turnout
+                    });
+
+                scale_value = current_district.turnout;
             }
-            return color_scale(0);
+
+            return turnout_scale(scale_value);
         })
         .on("mouseenter", mouse_enter)
         .on("mouseleave", mouse_leave)
