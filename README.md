@@ -1,3 +1,19 @@
+# Submission ToDo List
+* all documents and complete runnabel software on **USB** stick
+* software test functionality on
+  * edge
+  * chrome
+  * firefox
+* what to submit
+  * complete runnabel software
+  * UML Klassendiagramm
+  * Source Code (not necessary because JavaScript is interpreter langauge -> make notes about this)
+  * Manual of software functionality
+  * Unittests
+    * Manual how to run those tests
+    * source code of tests -> folder "tests" 
+
+
 # Open-Data-Election-Results
 A simple Application, which analyzes election results by the populatin of its region.
 
