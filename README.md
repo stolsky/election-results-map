@@ -1,19 +1,3 @@
-# Submission ToDo List
-* all documents and complete runnabel software on **USB** stick
-* software test functionality on
-  * edge
-  * chrome
-  * firefox
-* what to submit
-  * complete runnabel software
-  * UML Klassendiagramm
-  * Source Code (not necessary because JavaScript is interpreter langauge -> make notes about this)
-  * Manual of software functionality
-  * Unittests
-    * Manual how to run those tests
-    * source code of tests -> folder "tests" 
-
-
 # Open-Data-Election-Results
 A simple Application, which analyzes election results by the populatin of its region.
 
@@ -30,13 +14,61 @@ A simple Application, which analyzes election results by the populatin of its re
 4. create iterations and its tasks
 5. for each task create a new branch
 
-# General workflow of the Application
+# General workflow of the Application / Pipeline
 
-## 1) Data Collection
+## 1) Collection
 1. import data from local disk or from web via REST API
+   * json and csv files
 2. parse data (into javascript objects to work with)
-3. filter and reduce data to necessary parts
-   * only need second vote for CDU/CSU, SPD, FDP, Gruene, Linke, AfD
+
+### Problems with CSV
+* if table has a more complex header, you have to know the structure
+  * for example in "dat/btw2005_kerg.csv" from the 4th column on, all headers are complex
+<table>
+ <tr><td colspan=4>Partei</td></tr>
+ <tr><td colspan=2>Erststimme</td><td colspan=2>Zweitstimme</td></tr>
+ <tr><td>Endgültige</td><td>Vorperiode</td><td>Endgültige</td><td>Vorperiode</td></tr>
+</table>
+
+### REST API call structure
+```
+// structure of complete REST API REQUEST:
+const rest_api_request = function (query) {
+    fetch("https://www.opendata-hro.de/api/action/package_search?q=" + query)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                 // filter ergebnisse und wahlbezirke
+                return data.result.results.map(entry => entry.resources.filter(set => set.format.toLowerCase() === "json"));
+            }
+        });
+}
+```
+
+## 2) Selection
+* filter and reduce data to necessary parts
+  * for example: only need second vote for CDU/CSU, SPD, FDP, Gruene, Linke, AfD
+* link selected data to representative object property names
+  * for example: `city_districts = {borders: dataset1, population: dataset2, votings: dataset3}`
+
+## 3) Analysis (according to Information Quality Criteria)
+* search for missing, wrong attributes, values -> names, data types
+  
+## 4) Adjustments (according to Evaluation and Visualization)
+* create identifier if necessary
+* replace and unify attribute names
+  * use generic names
+* add missing attributes, values
+* correct wrong data types, precision, etc...
+* add dummy value if attribute is necessary else check with hasOwnProperty method
+ 
+## 5) Evaluation
+* compare, aggregate the data (prepare for visualization)
+* selection, range, data types, names, etc..
+ 
+## 6) Visualization
+* visualize the data using certain libraries as d3.js
+* integrate data into GUI
 
 # Tools, Libraries, Frameworks
   
@@ -71,3 +103,14 @@ another great tool to visualize data.
 [examples](https://www.d3-graph-gallery.com/index.html)
   
 [tutorial](https://wattenberger.com/)
+
+## Importing CSVs
+
+### via d3.dsv()
+* https://www.tutorialsteacher.com/d3js/loading-data-from-file-in-d3js#d3.csv
+* https://gist.github.com/jfreels/6814721
+* https://d3-wiki.readthedocs.io/zh_CN/master/CSV/
+
+### via Papa.parse()
+* https://www.papaparse.com/
+* https://www.papaparse.com/docs
