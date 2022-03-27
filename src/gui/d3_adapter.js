@@ -4,7 +4,25 @@ import {hasProperty, isNumber, isString} from "../../lib/jst/native/typecheck.js
 import {Cache} from "../../lib/jst/resource/cache.js";
 import {calculate_distance} from "../data/evaluation.js";
 
+
+const MODE = {
+    TURNOUT: {
+        id: 1,
+        title: "Wahlbeteiligung",
+        description: ""
+    },
+    DISTANCE: {
+        id: 2,
+        title: "Abstand der Wahlergebnisse",
+        description: ""
+    }
+};
+// affects mouse events
+let current_mode = MODE.TURNOUT.id;
+
 let parties = null;
+
+// TODO create Tooltip class
 let tooltip = null;
 
 let distance_scale = null;
@@ -26,9 +44,9 @@ const init = function (parties_info) {
         .domain([50, 90])
         .interpolator(d3.interpolateRdYlGn);
 
-    tooltip = d3.select(".AppBody")
-        .append("div")
-        .attr("class", "Tooltip");
+    tooltip = d3.select(".AppBody").append("div").attr("class", "Tooltip");
+    tooltip.append("p").attr("class", "Title");
+    tooltip.append("div").attr("class", "Content");
 };
 
 const calculate_color_from_votings = (votings1, votings2) => distance_scale(
@@ -38,13 +56,46 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
     )
 );
 
+const create_turnout_visualization = function (title, value) {
+
+    tooltip.select(".Title").text(title);
+    const content = tooltip.select(".Content");
+
+    const label = content.select(".Label");
+    if (label.empty()) {
+        content.append("span").attr("class", "Label").text("Wahlbeteiligung");
+    } else {
+        label.text("Wahlbeteiligung");
+    }
+
+    const text = content.select(".Text");
+    if (text.empty()) {
+        content.append("span").attr("class", "Text").text(value);
+    } else {
+        text.text(value);
+    }
+
+};
+
+const create_votings_visualization = function (title, data) {
+
+    tooltip.select(".Title").text(title);
+
+    // TODO visualize voting results with a bar chart
+};
+
 const mouse_enter = function (event, features) {
 
-    if (hasProperty(features.properties, "name")) {
-        tooltip
-            .text(features.properties.name)
-            .style("opacity", 1);
+    const zone = Data_Store.getItem(features.properties.id);
+    const name = features.properties.name;
+
+    if (current_mode === MODE.TURNOUT.id) {
+        create_turnout_visualization(name, zone.turnout);
+    } else if (current_mode === MODE.DISTANCE.id) {
+        create_votings_visualization(name, zone.votings);
     }
+
+    tooltip.style("opacity", 1);
 
     d3.selectAll(".District")
         .transition()
@@ -73,8 +124,12 @@ const mouse_move = function (event) {
 
 const mouse_click = function (event, features) {
 
+    current_mode = MODE.DISTANCE.id;
+    // TODO remember current zone to not display results over already displayed results
+    tooltip.style("opacity", 0);
+
     const code = features.properties.id;
-    const comparison_zone = Data_Store.getItem(code);
+    const zone = Data_Store.getItem(code);
 
     d3.selectAll(".District")
         .interrupt()
@@ -84,23 +139,16 @@ const mouse_click = function (event, features) {
         .style("fill", d => {
             let color = null;
             if (hasProperty(d.properties, "id")) {
-                const current_zone = Data_Store.getItem(d.properties.id);
-                console.log(
-                    "current", current_zone.votings,
-                    "compare", comparison_zone.votings
-                );
+                const compare_zone = Data_Store.getItem(d.properties.id);
                 color = calculate_color_from_votings(
-                    current_zone.votings,
-                    comparison_zone.votings
+                    compare_zone.votings,
+                    zone.votings
                 );
             }
             return color;
         });
 
-    d3.select(this)
-        .transition()
-        .duration(200)
-        .style("opacity", 1);
+    // d3.select(this);
 };
 
 // const handle_zoom = function (event) {
@@ -124,6 +172,7 @@ const create_data_map = function (dataset, container_class_name, options) {
         width = options.size.width;
         height = options.size.height;
     }
+
     // create projection of geo.json; center and zoom projection ccording to given dimensions
     const projection = d3.geoMercator().fitSize([width, height], dataset.map);
     const geoGenerator = d3.geoPath().projection(projection);

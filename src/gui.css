@@ -36,6 +36,18 @@
     border: 2px solid #000000;
     border-radius: 5px;
     padding: 5px;
+    font-size: 0.9em;
+}
+.AppBody .Tooltip .Title {
+    margin: 0 0 4px 0;
+    font-weight: bold;
+}
+.AppBody .Tooltip .Content .Label::after {
+    content: ":";
+    margin-right: 4px;
+}
+.AppBody .Tooltip .Content .Text::after {
+    content: "%";
 }
 
 .AppBody .MapContainer {
