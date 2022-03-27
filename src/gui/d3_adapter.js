@@ -13,6 +13,20 @@ let density_scale = null;
 
 const Data_Store = new Cache();
 
+const init = function () {
+
+    distance_scale = d3.scaleSequential(d3.interpolate("white", "purple"))
+        .domain([0, 50]);
+
+    turnout_scale = d3.scaleSequential()
+        .domain([50, 90])
+        .interpolator(d3.interpolateRdYlGn);
+
+    tooltip = d3.select(".AppBody")
+        .append("div")
+        .attr("class", "Tooltip");
+};
+
 const calculate_color_from_votings = (votings1, votings2) => distance_scale(
     calculate_distance(
         votings1.map(result => result.value),
@@ -22,9 +36,9 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
 
 const mouse_enter = function (event, features) {
 
-    if (hasProperty(features.properties, "bezeichnung")) {
+    if (hasProperty(features.properties, "name")) {
         tooltip
-            .text(features.properties.bezeichnung)
+            .text(features.properties.name)
             .style("opacity", 1);
     }
 
@@ -60,8 +74,8 @@ const mouse_move = function (event) {
 
 const mouse_click = function (event, features) {
 
-    const comparison_district_code = features.properties.code;
-    const comparison_district = Data_Store.getItem(comparison_district_code);
+    const code = features.properties.id;
+    const comparison_zone = Data_Store.getItem(code);
 
     d3.selectAll(".District")
         .interrupt()
@@ -70,9 +84,16 @@ const mouse_click = function (event, features) {
         .style("opacity", 1)
         .style("fill", d => {
             let color = null;
-            if (hasProperty(d.properties, "code")) {
-                const current_district = Data_Store.getItem(d.properties.code);
-                color = calculate_color_from_votings(current_district.votings, comparison_district.votings);
+            if (hasProperty(d.properties, "id")) {
+                const current_zone = Data_Store.getItem(d.properties.id);
+                console.log(
+                    "current", current_zone.votings,
+                    "compare", comparison_zone.votings
+                );
+                color = calculate_color_from_votings(
+                    current_zone.votings,
+                    comparison_zone.votings
+                );
             }
             return color;
         });
@@ -100,7 +121,7 @@ const create_data_map = function (dataset, container_class_name, options) {
         height = options.size.height;
     }
     // create projection of geo.json; center and zoom projection ccording to given dimensions
-    const projection = d3.geoMercator().fitSize([width, height], dataset.borders);
+    const projection = d3.geoMercator().fitSize([width, height], dataset.map);
     const geoGenerator = d3.geoPath().projection(projection);
 
     // fetch map container and create svg container for map
@@ -118,28 +139,10 @@ const create_data_map = function (dataset, container_class_name, options) {
         .attr("class", "Name")
         .text(description);
 
-    // create color scales if not available
-    if (!distance_scale) {
-        distance_scale = d3.scaleSequential(d3.interpolate("white", "purple"))
-            .domain([0, 50]);
-    }
-    if (!turnout_scale) {
-        turnout_scale = d3.scaleSequential()
-            .domain([50, 90])
-            .interpolator(d3.interpolateRdYlGn);
-    }
-
-    // create tooltip if not available
-    if (!tooltip) {
-        tooltip = d3.select(".AppBody")
-            .append("div")
-            .attr("class", "Tooltip");
-    }
-
     // add geo.json data to svg container
     d3.select(container_class_name + " .Map")
         .selectAll("path")
-        .data(dataset.borders.features)
+        .data(dataset.map.features)
         .join("path")
         .attr("d", geoGenerator)
         .attr("class", "District")
@@ -147,10 +150,10 @@ const create_data_map = function (dataset, container_class_name, options) {
 
             let scale_value = 0;
 
-            if (hasProperty(d.properties, "code")) {
+            if (hasProperty(d.properties, "id")) {
 
-                const current_code = d.properties.code;
-                const current_district = dataset.votings.find(district => district.id === current_code);
+                const current_code = d.properties.id;
+                const current_district = dataset.election.find(district => district.id === current_code);
 
                 // store additional data, which cannot be bind to svg elements in a cache
                 Data_Store.setItem(
@@ -174,5 +177,6 @@ const create_data_map = function (dataset, container_class_name, options) {
 
 
 export {
-    create_data_map
+    create_data_map,
+    init
 };
