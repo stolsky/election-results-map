@@ -55,7 +55,10 @@ const load_files = async function (...files) {
             if (hasProperty(file, "name") && isString(file.name)) {
 
                 // TODO check for http, https, etc.. -> other mode
-                const mode = "same-origin";
+                let mode = "same-origin";
+                if (file.name.startsWith("http")) {
+                    mode = "cors";
+                }
 
                 if (file.name.endsWith(".json")) {
                     files_to_be_loaded.push(

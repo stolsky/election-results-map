@@ -4,7 +4,7 @@ import {hasProperty, isNumber, isString} from "../../lib/jst/native/typecheck.js
 import {Cache} from "../../lib/jst/resource/cache.js";
 import {calculate_distance} from "../data/evaluation.js";
 
-
+let parties = null;
 let tooltip = null;
 
 let distance_scale = null;
@@ -13,7 +13,11 @@ let density_scale = null;
 
 const Data_Store = new Cache();
 
-const init = function () {
+const init = function (parties_info) {
+
+    if (parties_info) {
+        parties = parties_info;
+    }
 
     distance_scale = d3.scaleSequential(d3.interpolate("white", "purple"))
         .domain([0, 50]);
@@ -64,12 +68,7 @@ const mouse_leave = function (event) {
 };
 
 const mouse_move = function (event) {
-    const [x, y] = d3.pointer(event);
-    // TODO use transform.translate() instead of left & top
-    // TODO calculate the x & y in a way that it looks the same in every resolution
-    tooltip
-        .style("left", (x + 15) + "px")
-        .style("top", (y + 90) + "px");
+    tooltip.style("translate", `${event.clientX + 5}px ${event.clientY - 65}px`);
 };
 
 const mouse_click = function (event, features) {
@@ -97,6 +96,11 @@ const mouse_click = function (event, features) {
             }
             return color;
         });
+
+    d3.select(this)
+        .transition()
+        .duration(200)
+        .style("opacity", 1);
 };
 
 // const handle_zoom = function (event) {

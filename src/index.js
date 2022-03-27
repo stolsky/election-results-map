@@ -12,11 +12,19 @@ let parties = null;
 // Pipeline
 Import.load_files(
     {name: "dat/parties.json"},
+
+    // {name: "https://geo.sv.rostock.de/download/opendata/stadtbereiche/stadtbereiche.json"},
     {name: "dat/rostock_districts.geo.json"},
+
+    // {name: "https://geo.sv.rostock.de/download/opendata/bundestagswahl_2017/bundestagswahl_2017_ergebnisse.json"},
     {name: "dat/btw_2017_hro_districts.json"},
-    {name: "dat/demographic_structure_2017.json"},
+
+    // {name: "https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_2017/bevoelkerungsstruktur_2017_insgesamt.json"},
+    {name: "dat/structure_2017_hro_districts.json"},
+
     {name: "dat/mecklenburgvorpommern.geo.json"},
     {name: "dat/germany.geo.json"},
+
     // https://www.bundeswahlleiter.de/dam/jcr/0d1ea773-f3ca-40ea-b8ff-b031712707e1/btw17_kerg2.csv
     {name: "dat/btw_2017_de.csv", delimiter: ";", comments: "#"}
 ).then(loaded_data => {
@@ -49,6 +57,7 @@ Import.load_files(
     const turnout_de = Selection.calculate_turnout(results_de, options_turnout);
     const votings_de = Selection.extract_votings(results_de, options_votings);
 
+    // TODO do all aggregations -> calulate percentages of turnouts and votes and its precision to Evaluation
     return {
         city_districts: {
             map: loaded_data[1],
@@ -120,19 +129,26 @@ Import.load_files(
 }).then(data => {
 
     // Analysis. ... (data, {}))
-    // console.log(data);
+    // give places where to find data to check -> quality criteria formulae
 
     return data;
 
 }).then(data => {
 
     // Evaluation. ...(results, {}))
+    // console.log(data);
 
     return data;
 
 }).then(data => {
-console.log(data);
-    Visualization.init({title: "Wahlergebnisse 2017", subtitle: "Visuelle Darstellung der Wahlergebnisse", area: "a b,a c", cols: "70% 30%"});
+
+    Visualization.init({
+        title: "Wahlergebnisse 2017",
+        subtitle: "Visuelle Darstellung der Wahlergebnisse",
+        area: "a b,a c",
+        cols: "70% 30%",
+        parties
+    });
 
     Visualization.add_data_map(data.city_districts, {description: "Rostock, Stadtbereiche"});
     Visualization.add_data_map(data.federal_state, {description: "Mecklenburg-Vorpommern"});

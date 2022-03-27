@@ -74,7 +74,7 @@ const init = function (options) {
     const app = new Application("Open Data Election");
     app.getRootPane().append(header, body);
 
-    init_d3();
+    init_d3(options.parties || null);
 };
 
 /** Adds the map with its data to the next free map container.
