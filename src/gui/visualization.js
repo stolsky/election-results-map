@@ -1,12 +1,17 @@
 
+import {create_data_map, init as init_d3} from "./d3_adapter.js";
+import {hasProperty, isString} from "../../lib/jst/native/typecheck.js";
 import {Application} from "../../lib/jst/dom/application.js";
 import {Container} from "../../lib/jst/dom/container.js";
-import {create_data_map} from "./d3_adapter.js";
 import {TextComponent} from "../../lib/jst/dom/textcomponent.js";
-import {hasProperty, isString} from "../../lib/jst/native/typecheck.js";
+
 
 const map_containers = [];
 
+/** Creates main structure of webpage with dynamic features.
+ * Versatile customizable through options parameter.
+ * @param {*} options
+ */
 const init = function (options) {
 
     let title = null;
@@ -68,6 +73,8 @@ const init = function (options) {
 
     const app = new Application("Open Data Election");
     app.getRootPane().append(header, body);
+
+    init_d3(options.parties || null);
 };
 
 /** Adds the map with its data to the next free map container.

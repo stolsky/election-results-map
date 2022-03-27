@@ -1,8 +1,44 @@
 [
-    {"id": 0, "name": "", "color": ""},
-    {"id": 1, "name": "", "color": ""},
-    {"id": 2, "name": "", "color": ""},
-    {"id": 3, "name": "", "color": ""},
-    {"id": 4, "name": "", "color": ""},
-    {"id": 5, "name": "", "color": ""}
+    {
+        "id": 0,
+        "name": "SPD",
+        "full": "Sozialdemokratische Partei Deutschlands",
+        "color": "#e3000f",
+        "est": 1890
+    },
+    {
+        "id": 1,
+        "name": "CDU",
+        "full": "Christlich Demokratische Union Deutschlands",
+        "color": "#000000",
+        "est": 1945
+    },
+    {
+        "id": 2,
+        "name": "FDP",
+        "full": "Freie Demokratische Partei",
+        "color": "#ffff00",
+        "est": 1948
+    },
+    {
+        "id": 3,
+        "name": "GRÜNE",
+        "full": "Bündnis 90/Die Grünen",
+        "color": "#1aa037",
+        "est": 1993
+    },
+    {
+        "id": 4,
+        "name": "DIE LINKE",
+        "full": "Die Linke",
+        "color": "#ff00ff",
+        "est": 2007
+    },
+    {
+        "id": 5,
+        "name": "AfD",
+        "full": "Alternative für Deutschland",
+        "color": "#009ce0",
+        "est": 2013
+    }
 ]

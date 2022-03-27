@@ -20,7 +20,7 @@ A simple Application, which analyzes election results by the populatin of its re
 # Development
 1. define personas to create user stories in the form of `As <persona>, I want <goal>, so that <reason>.`
    * personas: App Provider, App User
-   * Example: As an <App Provider>, I want to 
+   * Example: As an "App Provider", I want to 
      * collect specific election results of Rostock and its districts to compare these result
      * collect additional election results of election district II, Mecklenburg-Vorpommern and Germany so I can compare these results
      * check if these election results satisfy certain data quality criteria, so I am sure to work with the most correct data
@@ -38,34 +38,25 @@ A simple Application, which analyzes election results by the populatin of its re
 3. filter and reduce data to necessary parts
    * only need second vote for CDU/CSU, SPD, FDP, Gruene, Linke, AfD
 
-## 2) Data Processing
-4. analysis (examine [reduced] data -> data quality criteria)
-   * for missing, wrong attributes, values -> names, data types, 
-5. preparation (adjust data)
-   * create identifies if necessary
-   * unify attribute names
-   * add/change missing attributes, values, wrong data types, precision, etc...
-   * add dummy value if attribute is necessary else check with hasOwnProperty method
-6. evaluate data
-   * compare, aggregate the data (prepare for visualization)
-   * selection, range, data types, names, etc..
-## 3) Data Visualization
-7. visualize the data using certain libraries as d3.js and leaflet
-8. integrate data into GUI
-
 # Tools, Libraries, Frameworks
   
-[Statistikportal](https://www.statistikportal.de/de/datenbanken)
-  
-[another Rostock database](https://rathaus.rostock.de/Statistik/Stadtbereichskatalog/atlas.html)
+* https://www.statistikportal.de/de/datenbanken
+* https://rathaus.rostock.de/Statistik/Stadtbereichskatalog/atlas.html
+* http://opendatalab.de/projects/geojson-utilities/
+* https://gdz.bkg.bund.de/index.php/default/open-data.html
+* https://data.opendatasoft.com/api/v2/console
+* https://regionalatlas.statistikportal.de/#
 
-[color mixing information](https://github.com/ProfJski/ArtColors)
+### Color mixing information
 
-## Leaflet
-[homepage](https://leafletjs.com/)
+* https://github.com/ProfJski/ArtColors
+* https://www.colorcombos.com/color-schemes/89/ColorCombo89.html
+  * use colors: FF9933, 003399, 99CCCC, CCCCCC ?
 
-[documentation](https://leafletjs.com/reference.html)
+~~## Leaflet~~
+~~[homepage](https://leafletjs.com/)~~
 
+~~[documentation](https://leafletjs.com/reference.html)~~
 
 ## UML Diagram Tool
 [yEd live](https://www.yworks.com/products/yed-live)

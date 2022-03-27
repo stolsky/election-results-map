@@ -1,6 +1,10 @@
 
 @import url(../lib/jst/dom/gui.css);
 
+.Application {
+    background-image: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+}
+
 .AppHeader {
     padding: 5px;
     height: calc(10% - 10px);
@@ -12,7 +16,7 @@
     text-transform: uppercase;
     font-size: 1.5em;
 }
-.AppHeader .Subitle {
+.AppHeader .Subtitle {
     /* font-weight: bold;
     text-transform: uppercase;
     font-size: 1.5em; */
