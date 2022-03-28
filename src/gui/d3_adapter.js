@@ -86,6 +86,8 @@ const Tooltip = (function () {
 
         chart = d3.select(".AppBody").append("div").attr("class", "Tooltip");
         chart.append("p").attr("class", "Title");
+        chart.append("p").attr("class", "ChartDescription")
+            .text("Wahlergebnisse");
         chart.append("div").attr("class", "Content");
 
         chart_width = 200;
@@ -94,12 +96,28 @@ const Tooltip = (function () {
     };
 
     core.update_position = function (x, y) {
+
+        let dom_elem = null;
         if (turnout_visible) {
-            turnout.style("translate", `${x + 5}px ${y - 65}px`);
+            dom_elem = turnout.node();
         }
         if (chart_visible) {
-            chart.style("translate", `${x + 5}px ${y - 65}px`);
+            dom_elem = chart.node();
         }
+
+        if (dom_elem) {
+
+            const new_x = (dom_elem.offsetWidth + x + 5 > window.innerWidth)
+                ? x - 5 - dom_elem.offsetWidth
+                : x + 5;
+
+            const new_y = (dom_elem.offsetHeight + y + 25 > window.innerHeight)
+                ? y - 85 - dom_elem.offsetHeight
+                : y - 65;
+
+            dom_elem.style.translate = `${new_x}px ${new_y}px`;
+        }
+
     };
 
     core.update_turnout = function (title, value) {
@@ -109,7 +127,8 @@ const Tooltip = (function () {
 
         turnout_visible = true;
         chart_visible = false;
-        turnout.style("opacity", 1);
+        // turnout.style("opacity", 1);
+        turnout.style("display", "block");
     };
 
     core.update_votings = function (title, data) {
@@ -137,17 +156,20 @@ const Tooltip = (function () {
 
         chart_visible = true;
         turnout_visible = false;
-        chart.style("opacity", 1);
+        // chart.style("opacity", 1);
+        chart.style("display", "block");
 
     };
 
     core.hide = function () {
         if (turnout_visible) {
-            turnout.style("opacity", 0);
+            // turnout.style("opacity", 0);
+            turnout.style("display", "none");
             turnout_visible = false;
         }
         if (chart_visible) {
-            chart.style("opacity", 0);
+            // chart.style("opacity", 0);
+            chart.style("display", "none");
             chart_visible = false;
         }
     };
@@ -182,6 +204,8 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
 );
 
 const mouse_enter = function (event, features) {
+
+    console.log(event.target);
 
     const zone = Data_Store.getItem(features.properties.id);
     const name = features.properties.name;
