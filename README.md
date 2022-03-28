@@ -85,7 +85,7 @@ const rest_api_request = function (query) {
 * https://www.colorcombos.com/color-schemes/89/ColorCombo89.html
   * use colors: FF9933, 003399, 99CCCC, CCCCCC ?
 
-~~## Leaflet~~
+## ~~Leaflet~~
 ~~[homepage](https://leafletjs.com/)~~
 
 ~~[documentation](https://leafletjs.com/reference.html)~~
@@ -100,9 +100,15 @@ another great tool to visualize data.
   
 [API](https://github.com/d3/d3/blob/main/API.md)
   
-[examples](https://www.d3-graph-gallery.com/index.html)
+[chart gallery](https://www.d3-graph-gallery.com/index.html)
+[plot gallery](https://observablehq.com/@analyzer2004/plot-gallery)
   
-[tutorial](https://wattenberger.com/)
+[tutorial](https://observablehq.com/collection/@d3/learn-d3)
+[tutorial 2](https://observablehq.com/collection/@thetylerwolf/25-days-of-d3)
+[tutorial 3](https://wattenberger.com/)
+
+[guide](https://towardsdatascience.com/how-can-beginners-design-cool-data-visualizations-d413ee288671)
+[guide 2](https://towardsdatascience.com/top-16-types-of-chart-in-data-visualization-196a76b54b62?gi=2405826e0a00)
 
 ## Importing CSVs
 
