@@ -22,12 +22,139 @@ let current_mode = MODE.TURNOUT.id;
 
 let parties = null;
 
-// TODO create Tooltip class
-let tooltip = null;
-
 let distance_scale = null;
 let turnout_scale = null;
 let density_scale = null;
+
+const get_party_property = (id, property) => parties.find(party => party.id === id)[property];
+
+const Tooltip = (function () {
+
+    let turnout = null;
+    let turnout_visible = false;
+
+    let chart = null;
+    let chart_visible = false;
+    let chart_width = 0;
+    let chart_height = 0;
+    let x_axis = null;
+    let y_axis = null;
+
+    const init_votings = function (data) {
+
+        const content = chart.select(".Content")
+            .append("svg")
+            .attr("width", chart_width + 20)
+            .attr("height", chart_height + 40)
+            .style("overflow", "visible")
+            .append("g")
+            .attr("transform", "translate(" + 20 + "," + 10 + ")");
+
+        x_axis = d3.scaleBand()
+            .range([0, chart_width])
+            .domain(data.map(d => get_party_property(d.id, "name")))
+            .padding(0.2);
+        content.append("g")
+            .attr("transform", `translate(0, ${chart_height})`)
+            .call(d3.axisBottom(x_axis))
+            .selectAll("text")
+            .attr("transform", "translate(5, -3) rotate(-25)")
+            .style("text-anchor", "end");
+
+        y_axis = d3.scaleLinear()
+            .domain([0, 50])
+            .range([chart_height, 0]);
+        content.append("g")
+            .call(d3.axisLeft(y_axis));
+
+    };
+
+    const core = {};
+
+    core.init = function () {
+
+        turnout = d3.select(".AppBody").append("div").attr("class", "Tooltip");
+        turnout.append("p").attr("class", "Title");
+        const content = turnout.append("div").attr("class", "Content");
+        content
+            .append("span")
+            .attr("class", "Label")
+            .text("Wahlbeteiligung");
+        content
+            .append("span")
+            .attr("class", "Text");
+
+        chart = d3.select(".AppBody").append("div").attr("class", "Tooltip");
+        chart.append("p").attr("class", "Title");
+        chart.append("div").attr("class", "Content");
+
+        chart_width = 200;
+        chart_height = 200;
+
+    };
+
+    core.update_position = function (x, y) {
+        if (turnout_visible) {
+            turnout.style("translate", `${x + 5}px ${y - 65}px`);
+        }
+        if (chart_visible) {
+            chart.style("translate", `${x + 5}px ${y - 65}px`);
+        }
+    };
+
+    core.update_turnout = function (title, value) {
+
+        turnout.select(".Title").text(title);
+        turnout.select(".Text").text(value);
+
+        turnout_visible = true;
+        chart_visible = false;
+        turnout.style("opacity", 1);
+    };
+
+    core.update_votings = function (title, data) {
+
+        chart.select(".Title").text(title);
+
+        if (!x_axis && !y_axis) {
+            init_votings(data);
+        }
+
+        const content = chart.select("svg g").selectAll("rect")
+            .data(data);
+
+        content
+            .enter()
+            .append("rect")
+            .merge(content)
+            .transition()
+            .duration(500)
+            .attr("x", d => x_axis(get_party_property(d.id, "name")))
+            .attr("y", d => y_axis(d.value))
+            .attr("width", x_axis.bandwidth())
+            .attr("height", d => chart_height - y_axis(d.value))
+            .attr("fill", d => get_party_property(d.id, "color"));
+
+        chart_visible = true;
+        turnout_visible = false;
+        chart.style("opacity", 1);
+
+    };
+
+    core.hide = function () {
+        if (turnout_visible) {
+            turnout.style("opacity", 0);
+            turnout_visible = false;
+        }
+        if (chart_visible) {
+            chart.style("opacity", 0);
+            chart_visible = false;
+        }
+    };
+
+    return Object.freeze(core);
+
+})();
 
 const Data_Store = new Cache();
 
@@ -44,9 +171,7 @@ const init = function (parties_info) {
         .domain([50, 90])
         .interpolator(d3.interpolateRdYlGn);
 
-    tooltip = d3.select(".AppBody").append("div").attr("class", "Tooltip");
-    tooltip.append("p").attr("class", "Title");
-    tooltip.append("div").attr("class", "Content");
+    Tooltip.init();
 };
 
 const calculate_color_from_votings = (votings1, votings2) => distance_scale(
@@ -56,46 +181,16 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
     )
 );
 
-const create_turnout_visualization = function (title, value) {
-
-    tooltip.select(".Title").text(title);
-    const content = tooltip.select(".Content");
-
-    const label = content.select(".Label");
-    if (label.empty()) {
-        content.append("span").attr("class", "Label").text("Wahlbeteiligung");
-    } else {
-        label.text("Wahlbeteiligung");
-    }
-
-    const text = content.select(".Text");
-    if (text.empty()) {
-        content.append("span").attr("class", "Text").text(value);
-    } else {
-        text.text(value);
-    }
-
-};
-
-const create_votings_visualization = function (title, data) {
-
-    tooltip.select(".Title").text(title);
-
-    // TODO visualize voting results with a bar chart
-};
-
 const mouse_enter = function (event, features) {
 
     const zone = Data_Store.getItem(features.properties.id);
     const name = features.properties.name;
 
     if (current_mode === MODE.TURNOUT.id) {
-        create_turnout_visualization(name, zone.turnout);
+        Tooltip.update_turnout(name, zone.turnout);
     } else if (current_mode === MODE.DISTANCE.id) {
-        create_votings_visualization(name, zone.votings);
+        Tooltip.update_votings(name, zone.votings);
     }
-
-    tooltip.style("opacity", 1);
 
     d3.selectAll(".District")
         .transition()
@@ -110,7 +205,7 @@ const mouse_enter = function (event, features) {
 
 const mouse_leave = function (event) {
 
-    tooltip.style("opacity", 0);
+    Tooltip.hide();
 
     d3.selectAll(".District")
         .transition()
@@ -119,17 +214,21 @@ const mouse_leave = function (event) {
 };
 
 const mouse_move = function (event) {
-    tooltip.style("translate", `${event.clientX + 5}px ${event.clientY - 65}px`);
+    Tooltip.update_position(event.clientX, event.clientY);
 };
 
 const mouse_click = function (event, features) {
 
+    const code = features.properties.id;
+    const name = features.properties.name;
+    const zone = Data_Store.getItem(code);
+
     current_mode = MODE.DISTANCE.id;
     // TODO remember current zone to not display results over already displayed results
-    tooltip.style("opacity", 0);
 
-    const code = features.properties.id;
-    const zone = Data_Store.getItem(code);
+    Tooltip.hide();
+    Tooltip.update_votings(name, zone.votings);
+    Tooltip.update_position(event.clientX, event.clientY);
 
     d3.selectAll(".District")
         .interrupt()
@@ -140,25 +239,12 @@ const mouse_click = function (event, features) {
             let color = null;
             if (hasProperty(d.properties, "id")) {
                 const compare_zone = Data_Store.getItem(d.properties.id);
-                color = calculate_color_from_votings(
-                    compare_zone.votings,
-                    zone.votings
-                );
+                color = calculate_color_from_votings(compare_zone.votings, zone.votings);
             }
             return color;
         });
 
-    // d3.select(this);
 };
-
-// const handle_zoom = function (event) {
-//     d3.select("svg g")
-//         .attr("transform", event.transform);
-// };
-
-// const zoom = d3.zoom()
-//     .on("zoom", handle_zoom);
-
 
 const create_data_map = function (dataset, container_class_name, options) {
 
@@ -181,8 +267,6 @@ const create_data_map = function (dataset, container_class_name, options) {
     d3.select(container_class_name)
         .append("svg").attr("width", width).attr("height", height)
         .append("g").attr("class", "Map");
-
-    // d3.select("svg").call(zoom);
 
     // create description container and insert description text
     const description = (hasProperty(options, "description") && isString(options.description))
