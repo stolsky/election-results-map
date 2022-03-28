@@ -147,7 +147,7 @@ const Tooltip = (function () {
             .append("rect")
             .merge(content)
             .transition()
-            .duration(500)
+            .duration(1000)
             .attr("x", d => x_axis(get_party_property(d.id, "name")))
             .attr("y", d => y_axis(d.value))
             .attr("width", x_axis.bandwidth())
