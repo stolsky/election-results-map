@@ -72,6 +72,7 @@ const init = function (options) {
     });
 
     const app = new Application("Open Data Election");
+    app.setContextMenuEnabled(false);
     app.getRootPane().append(header, body);
 
     init_d3(options.parties || null);

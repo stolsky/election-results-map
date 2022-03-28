@@ -95,6 +95,7 @@ const unify_name = name => name
     .replace(/ü/, "ue")
     .replace(/_/, " ");
 
+
 // TODO it very depends on the parties structure and election structure
 const sort_election_results = function (source_data, ...data_to_sort) {
 
@@ -108,7 +109,7 @@ const sort_election_results = function (source_data, ...data_to_sort) {
                 const index = source_data.findIndex(party => unify_name(party.name) === current_name);
 
                 if (index !== -1) {
-                    current.id = source_data[index].name;
+                    current.id = source_data[index].id;
                     new_order[index] = current;
                 }
             }

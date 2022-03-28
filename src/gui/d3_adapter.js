@@ -4,12 +4,157 @@ import {hasProperty, isNumber, isString} from "../../lib/jst/native/typecheck.js
 import {Cache} from "../../lib/jst/resource/cache.js";
 import {calculate_distance} from "../data/evaluation.js";
 
+
+const MODE = {
+    TURNOUT: {
+        id: 1,
+        title: "Wahlbeteiligung",
+        description: ""
+    },
+    DISTANCE: {
+        id: 2,
+        title: "Abstand der Wahlergebnisse",
+        description: ""
+    }
+};
+// affects mouse events
+let current_mode = MODE.TURNOUT.id;
+
 let parties = null;
-let tooltip = null;
 
 let distance_scale = null;
 let turnout_scale = null;
 let density_scale = null;
+
+const get_party_property = (id, property) => parties.find(party => party.id === id)[property];
+
+const Tooltip = (function () {
+
+    let turnout = null;
+    let turnout_visible = false;
+
+    let chart = null;
+    let chart_visible = false;
+    let chart_width = 0;
+    let chart_height = 0;
+    let x_axis = null;
+    let y_axis = null;
+
+    const init_votings = function (data) {
+
+        const content = chart.select(".Content")
+            .append("svg")
+            .attr("width", chart_width + 20)
+            .attr("height", chart_height + 40)
+            .style("overflow", "visible")
+            .append("g")
+            .attr("transform", "translate(" + 20 + "," + 10 + ")");
+
+        x_axis = d3.scaleBand()
+            .range([0, chart_width])
+            .domain(data.map(d => get_party_property(d.id, "name")))
+            .padding(0.2);
+        content.append("g")
+            .attr("transform", `translate(0, ${chart_height})`)
+            .call(d3.axisBottom(x_axis))
+            .selectAll("text")
+            .attr("transform", "translate(5, -3) rotate(-25)")
+            .style("text-anchor", "end");
+
+        y_axis = d3.scaleLinear()
+            .domain([0, 50])
+            .range([chart_height, 0]);
+        content.append("g")
+            .call(d3.axisLeft(y_axis));
+
+    };
+
+    const core = {};
+
+    core.init = function () {
+
+        turnout = d3.select(".AppBody").append("div").attr("class", "Tooltip");
+        turnout.append("p").attr("class", "Title");
+        const content = turnout.append("div").attr("class", "Content");
+        content
+            .append("span")
+            .attr("class", "Label")
+            .text("Wahlbeteiligung");
+        content
+            .append("span")
+            .attr("class", "Text");
+
+        chart = d3.select(".AppBody").append("div").attr("class", "Tooltip");
+        chart.append("p").attr("class", "Title");
+        chart.append("div").attr("class", "Content");
+
+        chart_width = 200;
+        chart_height = 200;
+
+    };
+
+    core.update_position = function (x, y) {
+        if (turnout_visible) {
+            turnout.style("translate", `${x + 5}px ${y - 65}px`);
+        }
+        if (chart_visible) {
+            chart.style("translate", `${x + 5}px ${y - 65}px`);
+        }
+    };
+
+    core.update_turnout = function (title, value) {
+
+        turnout.select(".Title").text(title);
+        turnout.select(".Text").text(value);
+
+        turnout_visible = true;
+        chart_visible = false;
+        turnout.style("opacity", 1);
+    };
+
+    core.update_votings = function (title, data) {
+
+        chart.select(".Title").text(title);
+
+        if (!x_axis && !y_axis) {
+            init_votings(data);
+        }
+
+        const content = chart.select("svg g").selectAll("rect")
+            .data(data);
+
+        content
+            .enter()
+            .append("rect")
+            .merge(content)
+            .transition()
+            .duration(500)
+            .attr("x", d => x_axis(get_party_property(d.id, "name")))
+            .attr("y", d => y_axis(d.value))
+            .attr("width", x_axis.bandwidth())
+            .attr("height", d => chart_height - y_axis(d.value))
+            .attr("fill", d => get_party_property(d.id, "color"));
+
+        chart_visible = true;
+        turnout_visible = false;
+        chart.style("opacity", 1);
+
+    };
+
+    core.hide = function () {
+        if (turnout_visible) {
+            turnout.style("opacity", 0);
+            turnout_visible = false;
+        }
+        if (chart_visible) {
+            chart.style("opacity", 0);
+            chart_visible = false;
+        }
+    };
+
+    return Object.freeze(core);
+
+})();
 
 const Data_Store = new Cache();
 
@@ -26,9 +171,7 @@ const init = function (parties_info) {
         .domain([50, 90])
         .interpolator(d3.interpolateRdYlGn);
 
-    tooltip = d3.select(".AppBody")
-        .append("div")
-        .attr("class", "Tooltip");
+    Tooltip.init();
 };
 
 const calculate_color_from_votings = (votings1, votings2) => distance_scale(
@@ -40,10 +183,13 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
 
 const mouse_enter = function (event, features) {
 
-    if (hasProperty(features.properties, "name")) {
-        tooltip
-            .text(features.properties.name)
-            .style("opacity", 1);
+    const zone = Data_Store.getItem(features.properties.id);
+    const name = features.properties.name;
+
+    if (current_mode === MODE.TURNOUT.id) {
+        Tooltip.update_turnout(name, zone.turnout);
+    } else if (current_mode === MODE.DISTANCE.id) {
+        Tooltip.update_votings(name, zone.votings);
     }
 
     d3.selectAll(".District")
@@ -59,7 +205,7 @@ const mouse_enter = function (event, features) {
 
 const mouse_leave = function (event) {
 
-    tooltip.style("opacity", 0);
+    Tooltip.hide();
 
     d3.selectAll(".District")
         .transition()
@@ -68,13 +214,21 @@ const mouse_leave = function (event) {
 };
 
 const mouse_move = function (event) {
-    tooltip.style("translate", `${event.clientX + 5}px ${event.clientY - 65}px`);
+    Tooltip.update_position(event.clientX, event.clientY);
 };
 
 const mouse_click = function (event, features) {
 
     const code = features.properties.id;
-    const comparison_zone = Data_Store.getItem(code);
+    const name = features.properties.name;
+    const zone = Data_Store.getItem(code);
+
+    current_mode = MODE.DISTANCE.id;
+    // TODO remember current zone to not display results over already displayed results
+
+    Tooltip.hide();
+    Tooltip.update_votings(name, zone.votings);
+    Tooltip.update_position(event.clientX, event.clientY);
 
     d3.selectAll(".District")
         .interrupt()
@@ -84,33 +238,13 @@ const mouse_click = function (event, features) {
         .style("fill", d => {
             let color = null;
             if (hasProperty(d.properties, "id")) {
-                const current_zone = Data_Store.getItem(d.properties.id);
-                console.log(
-                    "current", current_zone.votings,
-                    "compare", comparison_zone.votings
-                );
-                color = calculate_color_from_votings(
-                    current_zone.votings,
-                    comparison_zone.votings
-                );
+                const compare_zone = Data_Store.getItem(d.properties.id);
+                color = calculate_color_from_votings(compare_zone.votings, zone.votings);
             }
             return color;
         });
 
-    d3.select(this)
-        .transition()
-        .duration(200)
-        .style("opacity", 1);
 };
-
-// const handle_zoom = function (event) {
-//     d3.select("svg g")
-//         .attr("transform", event.transform);
-// };
-
-// const zoom = d3.zoom()
-//     .on("zoom", handle_zoom);
-
 
 const create_data_map = function (dataset, container_class_name, options) {
 
@@ -124,6 +258,7 @@ const create_data_map = function (dataset, container_class_name, options) {
         width = options.size.width;
         height = options.size.height;
     }
+
     // create projection of geo.json; center and zoom projection ccording to given dimensions
     const projection = d3.geoMercator().fitSize([width, height], dataset.map);
     const geoGenerator = d3.geoPath().projection(projection);
@@ -132,8 +267,6 @@ const create_data_map = function (dataset, container_class_name, options) {
     d3.select(container_class_name)
         .append("svg").attr("width", width).attr("height", height)
         .append("g").attr("class", "Map");
-
-    // d3.select("svg").call(zoom);
 
     // create description container and insert description text
     const description = (hasProperty(options, "description") && isString(options.description))
