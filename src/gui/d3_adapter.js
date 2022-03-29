@@ -107,11 +107,11 @@ const Tooltip = (function () {
 
         if (dom_elem) {
 
-            const new_x = (dom_elem.offsetWidth + x + 5 > window.innerWidth)
+            const new_x = (dom_elem.offsetWidth + x + 10 > window.innerWidth)
                 ? x - 5 - dom_elem.offsetWidth
                 : x + 5;
 
-            const new_y = (dom_elem.offsetHeight + y + 25 > window.innerHeight)
+            const new_y = (dom_elem.offsetHeight + y + 20 > window.innerHeight)
                 ? y - 85 - dom_elem.offsetHeight
                 : y - 65;
 
@@ -127,7 +127,6 @@ const Tooltip = (function () {
 
         turnout_visible = true;
         chart_visible = false;
-        // turnout.style("opacity", 1);
         turnout.style("display", "block");
     };
 
@@ -156,19 +155,16 @@ const Tooltip = (function () {
 
         chart_visible = true;
         turnout_visible = false;
-        // chart.style("opacity", 1);
         chart.style("display", "block");
 
     };
 
     core.hide = function () {
         if (turnout_visible) {
-            // turnout.style("opacity", 0);
             turnout.style("display", "none");
             turnout_visible = false;
         }
         if (chart_visible) {
-            // chart.style("opacity", 0);
             chart.style("display", "none");
             chart_visible = false;
         }
@@ -204,8 +200,6 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
 );
 
 const mouse_enter = function (event, features) {
-
-    console.log(event.target);
 
     const zone = Data_Store.getItem(features.properties.id);
     const name = features.properties.name;
@@ -243,30 +237,30 @@ const mouse_move = function (event) {
 
 const mouse_click = function (event, features) {
 
-    const code = features.properties.id;
-    const name = features.properties.name;
-    const zone = Data_Store.getItem(code);
+    if (current_mode === MODE.DISTANCE.id) {
 
-    current_mode = MODE.DISTANCE.id;
-    // TODO remember current zone to not display results over already displayed results
+        const code = features.properties.id;
+        const name = features.properties.name;
+        const zone = Data_Store.getItem(code);
 
-    Tooltip.hide();
-    Tooltip.update_votings(name, zone.votings);
-    Tooltip.update_position(event.clientX, event.clientY);
+        Tooltip.hide();
+        Tooltip.update_votings(name, zone.votings);
+        Tooltip.update_position(event.clientX, event.clientY);
 
-    d3.selectAll(".District")
-        .interrupt()
-        .transition()
-        .duration(500)
-        .style("opacity", 1)
-        .style("fill", d => {
-            let color = null;
-            if (hasProperty(d.properties, "id")) {
-                const compare_zone = Data_Store.getItem(d.properties.id);
-                color = calculate_color_from_votings(compare_zone.votings, zone.votings);
-            }
-            return color;
-        });
+        d3.selectAll(".District")
+            .interrupt()
+            .transition()
+            .duration(500)
+            .style("opacity", 1)
+            .style("fill", d => {
+                let color = null;
+                if (hasProperty(d.properties, "id")) {
+                    const compare_zone = Data_Store.getItem(d.properties.id);
+                    color = calculate_color_from_votings(compare_zone.votings, zone.votings);
+                }
+                return color;
+            });
+    }
 
 };
 

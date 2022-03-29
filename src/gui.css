@@ -9,7 +9,13 @@
     padding: 5px;
     height: calc(10% - 10px);
     display: flex;
-    flex-flow: column;
+    align-items: center;
+}
+.AppHeader .MainHeader {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    padding: 5px;
 }
 .AppHeader .Title {
     font-weight: bold;
@@ -26,6 +32,7 @@
     display: grid;
     height: calc(90% - 10px);
     padding: 5px;
+    gap: 5px 10px;
 }
 
 .AppBody .Tooltip {
@@ -49,7 +56,7 @@
 .AppBody .Tooltip .Content .Text::after {
     content: "%";
 }
-.AppBody .Tooltip .Content .ChartDescription {
+.AppBody .Tooltip .ChartDescription {
     margin: 0;
 }
 

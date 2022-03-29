@@ -7,7 +7,7 @@ import {hasProperty} from "../../lib/jst/native/typecheck.js";
  * @param {Object} options
  * @returns {Object}
  */
-const calculate_turnout = function (data_table, options) {
+const extract_turnout = function (data_table, options) {
 
     if (!(data_table instanceof Array)) {
         return null;
@@ -33,7 +33,7 @@ const calculate_turnout = function (data_table, options) {
         return null;
     }
 
-    return {voted: turnout[0], eligible: turnout[1], result: turnout[0] * 100 / turnout[1]};
+    return {voted: turnout[0], eligible: turnout[1]};
 };
 
 /**
@@ -64,17 +64,8 @@ const extract_votings = function (data_table, options) {
         .map(row => ({id: row[options.group_column_id], value: row[options.votes_column_id]}));
 };
 
-const finalize_turnout = (turnout) => parseFloat(turnout.result.toFixed(1));
-
-const finalize_votings = (votings, turnout) => votings.map(result => {
-    result.value = parseFloat((result.value * 100 / turnout.voted).toFixed(1));
-    return result;
-});
-
 
 export {
-    calculate_turnout,
-    extract_votings,
-    finalize_turnout,
-    finalize_votings
+    extract_turnout,
+    extract_votings
 };

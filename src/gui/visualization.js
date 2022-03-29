@@ -10,29 +10,32 @@ const map_containers = [];
 
 /** Creates main structure of webpage with dynamic features.
  * Versatile customizable through options parameter.
- * @param {*} options
+ * @param {*} display_options
  */
-const init = function (options) {
+const init = function (display_options, display_modes, data_source) {
 
     let title = null;
-    if (hasProperty(options, "title") && isString(options.title)) {
-        title = new TextComponent(options.title, "Title");
+    if (hasProperty(display_options, "title") && isString(display_options.title)) {
+        title = new TextComponent(display_options.title, "Title");
     }
     let subtitle = null;
-    if (hasProperty(options, "subtitle") && isString(options.subtitle)) {
-        subtitle = new TextComponent(options.subtitle, "Subtitle");
+    if (hasProperty(display_options, "subtitle") && isString(display_options.subtitle)) {
+        subtitle = new TextComponent(display_options.subtitle, "Subtitle");
     }
+
+    const mainHeader = new Container("MainHeader");
+    mainHeader.append(title, subtitle);
     const header = new Container("AppHeader");
-    header.append(title, subtitle);
+    header.addComponent(mainHeader);
 
     const body = new Container("AppBody");
     const map_container_class_names = [];
-    if (hasProperty(options, "area") && isString(options.area)) {
+    if (hasProperty(display_options, "area") && isString(display_options.area)) {
 
-        body.setStyle("grid-template-areas", `"${options.area.replace(/,/g, "\" \"")}"`);
+        body.setStyle("grid-template-areas", `"${display_options.area.replace(/,/g, "\" \"")}"`);
 
         /** @type {Array<string>} */
-        const rows = options.area.split(",");
+        const rows = display_options.area.split(",");
         let max_cols = 0;
         rows.forEach(row => {
             const current_cols = row.split(" ");
@@ -47,14 +50,14 @@ const init = function (options) {
             });
         });
 
-        if (hasProperty(options, "cols") && isString(options.cols)) {
-            body.setStyle("grid-template-columns", options.cols);
+        if (hasProperty(display_options, "cols") && isString(display_options.cols)) {
+            body.setStyle("grid-template-columns", display_options.cols);
         } else {
             body.setStyle("grid-template-columns", `repeat(${max_cols}, 1fr)`);
         }
 
-        if (hasProperty(options, "rows") && isString(options.rows)) {
-            body.setStyle("grid-template-rows", options.rows);
+        if (hasProperty(display_options, "rows") && isString(display_options.rows)) {
+            body.setStyle("grid-template-rows", display_options.rows);
         } else {
             body.setStyle("grid-template-rows", `repeat(${rows.length}, 1fr)`);
         }
@@ -75,7 +78,7 @@ const init = function (options) {
     app.setContextMenuEnabled(false);
     app.getRootPane().append(header, body);
 
-    init_d3(options.parties || null);
+    init_d3(data_source || null);
 };
 
 /** Adds the map with its data to the next free map container.

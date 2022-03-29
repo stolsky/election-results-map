@@ -1,11 +1,4 @@
 
-const evaluate = function (data, options) {
-
-    // TODO analysis here
-
-    return data;
-};
-
 /** Calculates the distance of two vectors.
  * If the second vector (parameter vector2) is omitted, the distance to the zero vector will be calculated.
  *
@@ -51,8 +44,28 @@ const calculate_distance = function (vector_x, vector_y = null) {
     return null;
 };
 
+const convert_turnout_to_percent = function (dataset) {
+    dataset.turnout = parseFloat((dataset.turnout.voted * 100 / dataset.turnout.eligible).toFixed(1));
+};
+
+const convert_votings_to_percent = function (dataset) {
+    dataset.results = dataset.results.map(result => {
+        result.value = parseFloat((result.value * 100 / dataset.turnout).toFixed(1));
+        return result;
+    });
+};
+
+const convert_to_percent = function (data_source) {
+    if (data_source instanceof Array) {
+        data_source.forEach(dataset => {
+            convert_turnout_to_percent(dataset);
+            convert_votings_to_percent(dataset);
+        });
+    }
+};
+
 
 export {
     calculate_distance,
-    evaluate
+    convert_to_percent
 };

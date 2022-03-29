@@ -7,8 +7,6 @@ import * as Selection from "./data/selection.js";
 import * as Visualization from "./gui/visualization.js";
 
 
-let parties = null;
-
 // Pipeline
 Import.load_files(
     {name: "dat/parties.json"},
@@ -31,7 +29,7 @@ Import.load_files(
 
     // order by year of establishment (property "est")
     // important for comparison (distance method)
-    parties = loaded_data[0].sort((a, b) => a.est > b.est);
+    const parties = loaded_data[0].sort((a, b) => a.est > b.est);
 
     const results_de = loaded_data[6].filter(col => col[4] === "Bundesgebiet");
     const results_mv = loaded_data[6].filter(col => col[4] === "Mecklenburg-Vorpommern");
@@ -51,14 +49,9 @@ Import.load_files(
         parties_names: parties.map(party => party.name)
     };
 
-    const turnout_mv = Selection.calculate_turnout(results_mv, options_turnout);
-    const votings_mv = Selection.extract_votings(results_mv, options_votings);
-
-    const turnout_de = Selection.calculate_turnout(results_de, options_turnout);
-    const votings_de = Selection.extract_votings(results_de, options_votings);
-
     // TODO do all aggregations -> calulate percentages of turnouts and votes and its precision to Evaluation
     return {
+        parties,
         city_districts: {
             map: loaded_data[1],
             election: loaded_data[2],
@@ -69,8 +62,8 @@ Import.load_files(
             election: [{
                 id: "DE-MV",
                 name: "Mecklenburg-Vorpommern",
-                turnout: Selection.finalize_turnout(turnout_mv),
-                results: Selection.finalize_votings(votings_mv, turnout_mv)
+                turnout: Selection.extract_turnout(results_mv, options_turnout),
+                results: Selection.extract_votings(results_mv, options_votings)
             }],
             population: null
         },
@@ -79,8 +72,8 @@ Import.load_files(
             election: [{
                 id: "DE",
                 name: "Deutschland",
-                turnout: Selection.finalize_turnout(turnout_de),
-                results: Selection.finalize_votings(votings_de, turnout_de)
+                turnout: Selection.extract_turnout(results_de, options_turnout),
+                results: Selection.extract_votings(results_de, options_votings)
             }],
             population: null
         }
@@ -114,13 +107,12 @@ Import.load_files(
     );
 
     Adjustment.sort_election_results(
-        parties,
+        data.parties,
         data.city_districts.election,
         data.federal_state.election,
         data.country.election
     );
 
-    // TODO automate in Analysis
     data.country.map.features[0].properties.id = "DE";
     data.country.map.features[0].properties.name = "Deutschland";
 
@@ -135,20 +127,35 @@ Import.load_files(
 
 }).then(data => {
 
-    // Evaluation. ...(results, {}))
-    // console.log(data);
+    Evaluation.convert_to_percent(data.federal_state.election);
+    Evaluation.convert_to_percent(data.country.election);
 
     return data;
 
 }).then(data => {
 
-    Visualization.init({
-        title: "Wahlergebnisse 2017",
-        subtitle: "Visuelle Darstellung der Wahlergebnisse",
-        area: "a b,a c",
-        cols: "70% 30%",
-        parties
-    });
+    console.log(data);
+
+    Visualization.init(
+        {
+            title: "Wahlergebnisse 2017",
+            subtitle: "Visuelle Darstellung der Wahlergebnisse",
+            area: "a b,a c",
+            cols: "70% 30%"
+        }, {
+            TURNOUT: {
+                id: 1,
+                title: "Wahlbeteiligung",
+                description: ""
+            },
+            DISTANCE: {
+                id: 2,
+                title: "Abstand der Wahlergebnisse",
+                description: ""
+            }
+        },
+        data.parties
+    );
 
     Visualization.add_data_map(data.city_districts, {description: "Rostock, Stadtbereiche"});
     Visualization.add_data_map(data.federal_state, {description: "Mecklenburg-Vorpommern"});
