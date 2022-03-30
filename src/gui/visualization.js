@@ -1,5 +1,5 @@
 
-import {create_data_map, init as init_d3} from "./d3_adapter.js";
+import {create_map as create_d3_map, init as init_d3, reset_maps, show_turnouts} from "./d3_adapter.js";
 import {hasProperty, isString} from "../../lib/jst/native/typecheck.js";
 import {Application} from "../../lib/jst/dom/application.js";
 import {Container} from "../../lib/jst/dom/container.js";
@@ -7,26 +7,97 @@ import {TextComponent} from "../../lib/jst/dom/textcomponent.js";
 
 
 const map_containers = [];
+let STATE = null;
+let current_state = -1;
+
+/** Adds the map with its data to the next free map container.
+ *
+ * @param {Object} data
+ * @param {Object} options
+ */
+const add_data_map = function (data, options) {
+
+    const next_free_container = map_containers.find(container => container.unused);
+
+    if (next_free_container) {
+
+        const containersize = next_free_container.self.getOffsetSize();
+
+        // "push" size object to current options
+        Object.assign(options, {size: {width: containersize.width - 20, height: containersize.height - 20}});
+
+        create_d3_map(
+            data,
+            "." + next_free_container.class_name,
+            options
+        );
+
+        next_free_container.unused = false;
+    }
+
+};
+
+const is_current_state = (state) => {
+    console.log(current_state, state);
+    return current_state === state.id;
+};
 
 /** Creates main structure of webpage with dynamic features.
  * Versatile customizable through options parameter.
- * @param {*} display_options
+ *
+ * @param {Object} display_options
+ * @param {Object} display_modes
+ * @param {Object} data_source
  */
-const init = function (display_options, display_modes, data_source) {
+const init = function (display_options, display_modes = null, data_source = null) {
 
-    let title = null;
-    if (hasProperty(display_options, "title") && isString(display_options.title)) {
-        title = new TextComponent(display_options.title, "Title");
-    }
-    let subtitle = null;
-    if (hasProperty(display_options, "subtitle") && isString(display_options.subtitle)) {
-        subtitle = new TextComponent(display_options.subtitle, "Subtitle");
-    }
+    STATE = display_modes;
 
-    const mainHeader = new Container("MainHeader");
-    mainHeader.append(title, subtitle);
     const header = new Container("AppHeader");
-    header.addComponent(mainHeader);
+
+    const mainheader = new Container("MainHeader");
+    header.addComponent(mainheader);
+    if (hasProperty(display_options, "title") && isString(display_options.title)) {
+        mainheader.addComponent(new TextComponent(display_options.title, "Title"));
+    }
+    if (hasProperty(display_options, "subtitle") && isString(display_options.subtitle)) {
+        mainheader.addComponent(new TextComponent(display_options.subtitle, "Subtitle"));
+    }
+
+    header.addComponent(new Container("Seperator"));
+
+    if (display_modes instanceof Object) {
+        Object.values(display_modes).forEach(mode => {
+            const subheader = new Container("SubHeader");
+            subheader.addEventListener("click", () => {
+                if (subheader.hasClass("Active")) {
+                    subheader.removeClass("Active");
+                    reset_maps();
+                } else {
+                    header.getChildren()
+                        .filter(child => child.hasClass("Active"))
+                        .forEach(child => child.removeClass("Active"));
+                    subheader.addClass("Active");
+                    current_state = mode.id;
+                    if (mode.id === STATE.TURNOUT.id) {
+                        show_turnouts();
+                    } else if (mode.id === STATE.DISTANCE.id) {
+                        reset_maps();
+                    }
+                }
+            });
+            header.addComponent(subheader);
+            if (hasProperty(mode, "title")) {
+                subheader.addComponent(new TextComponent(mode.title, "Title"));
+            }
+            if (hasProperty(mode, "description")) {
+                subheader.append(
+                    new Container("Icon"),
+                    new TextComponent(mode.description, "Description")
+                );
+            }
+        });
+    }
 
     const body = new Container("AppBody");
     const map_container_class_names = [];
@@ -37,6 +108,7 @@ const init = function (display_options, display_modes, data_source) {
         /** @type {Array<string>} */
         const rows = display_options.area.split(",");
         let max_cols = 0;
+        let min_rows = 1; // TODO calculate correct
         rows.forEach(row => {
             const current_cols = row.split(" ");
             if (current_cols.length > max_cols) {
@@ -46,9 +118,11 @@ const init = function (display_options, display_modes, data_source) {
                 if (!map_container_class_names.includes(col)) {
                     map_container_class_names.push(col);
                 }
-
             });
         });
+
+        body.setStyle("height", `calc(90% - ${(min_rows + 1) * 5}px)`);
+        body.setStyle("width", `calc(100% - ${(max_cols + 1) * 5}px)`);
 
         if (hasProperty(display_options, "cols") && isString(display_options.cols)) {
             body.setStyle("grid-template-columns", display_options.cols);
@@ -78,39 +152,14 @@ const init = function (display_options, display_modes, data_source) {
     app.setContextMenuEnabled(false);
     app.getRootPane().append(header, body);
 
-    init_d3(data_source || null);
-};
-
-/** Adds the map with its data to the next free map container.
- *
- * @param {Object} data
- * @param {Object} options
- */
-const add_data_map = function (data, options) {
-
-    const next_free_container = map_containers.find(container => container.unused);
-
-    if (next_free_container) {
-
-        let containersize = null;
-        containersize = next_free_container.self.getOffsetSize();
-
-        // "push" size object to current options
-        Object.assign(options, {size: {width: containersize.width - 20, height: containersize.height - 20}});
-
-        create_data_map(
-            data,
-            "." + next_free_container.class_name,
-            options
-        );
-
-        next_free_container.unused = false;
-    }
+    init_d3(data_source);
 
 };
 
 
 export {
     add_data_map,
-    init
+    init,
+    is_current_state,
+    STATE
 };

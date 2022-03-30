@@ -1,24 +1,10 @@
 /* global d3 */
 
 import {hasProperty, isNumber, isString} from "../../lib/jst/native/typecheck.js";
+import {is_current_state, STATE} from "./visualization.js";
 import {Cache} from "../../lib/jst/resource/cache.js";
 import {calculate_distance} from "../data/evaluation.js";
 
-
-const MODE = {
-    TURNOUT: {
-        id: 1,
-        title: "Wahlbeteiligung",
-        description: ""
-    },
-    DISTANCE: {
-        id: 2,
-        title: "Abstand der Wahlergebnisse",
-        description: ""
-    }
-};
-// affects mouse events
-let current_mode = MODE.TURNOUT.id;
 
 let parties = null;
 
@@ -30,17 +16,18 @@ const get_party_property = (id, property) => parties.find(party => party.id === 
 
 const Tooltip = (function () {
 
-    let turnout = null;
-    let turnout_visible = false;
+    let tooltip = null;
+    let tooltip_visible = false;
+
+    let information = null;
 
     let chart = null;
-    let chart_visible = false;
     let chart_width = 0;
     let chart_height = 0;
     let x_axis = null;
     let y_axis = null;
 
-    const init_votings = function (data) {
+    const init_chart = function (data) {
 
         const content = chart.select(".Content")
             .append("svg")
@@ -69,73 +56,16 @@ const Tooltip = (function () {
 
     };
 
-    const core = {};
-
-    core.init = function () {
-
-        turnout = d3.select(".AppBody").append("div").attr("class", "Tooltip");
-        turnout.append("p").attr("class", "Title");
-        const content = turnout.append("div").attr("class", "Content");
-        content
-            .append("span")
-            .attr("class", "Label")
-            .text("Wahlbeteiligung");
-        content
-            .append("span")
-            .attr("class", "Text");
-
-        chart = d3.select(".AppBody").append("div").attr("class", "Tooltip");
-        chart.append("p").attr("class", "Title");
-        chart.append("p").attr("class", "ChartDescription")
-            .text("Wahlergebnisse");
-        chart.append("div").attr("class", "Content");
-
-        chart_width = 200;
-        chart_height = 200;
-
+    const update_information = function (value) {
+        information.select(".Text").text(value);
+        chart.style("display", "none");
+        information.style("display", "block");
     };
 
-    core.update_position = function (x, y) {
-
-        let dom_elem = null;
-        if (turnout_visible) {
-            dom_elem = turnout.node();
-        }
-        if (chart_visible) {
-            dom_elem = chart.node();
-        }
-
-        if (dom_elem) {
-
-            const new_x = (dom_elem.offsetWidth + x + 10 > window.innerWidth)
-                ? x - 5 - dom_elem.offsetWidth
-                : x + 5;
-
-            const new_y = (dom_elem.offsetHeight + y + 20 > window.innerHeight)
-                ? y - 85 - dom_elem.offsetHeight
-                : y - 65;
-
-            dom_elem.style.translate = `${new_x}px ${new_y}px`;
-        }
-
-    };
-
-    core.update_turnout = function (title, value) {
-
-        turnout.select(".Title").text(title);
-        turnout.select(".Text").text(value);
-
-        turnout_visible = true;
-        chart_visible = false;
-        turnout.style("display", "block");
-    };
-
-    core.update_votings = function (title, data) {
-
-        chart.select(".Title").text(title);
+    const update_chart = function (data) {
 
         if (!x_axis && !y_axis) {
-            init_votings(data);
+            init_chart(data);
         }
 
         const content = chart.select("svg g").selectAll("rect")
@@ -153,20 +83,75 @@ const Tooltip = (function () {
             .attr("height", d => chart_height - y_axis(d.value))
             .attr("fill", d => get_party_property(d.id, "color"));
 
-        chart_visible = true;
-        turnout_visible = false;
+        information.style("display", "none");
         chart.style("display", "block");
+    };
 
+    const core = {};
+
+    core.init = function () {
+
+        tooltip = d3.select(".AppBody").append("div").attr("class", "Tooltip");
+        tooltip.append("p").attr("class", "Title");
+        const content = tooltip.append("div").attr("class", "Content");
+
+        information = content.append("div").style("display", "none");
+        information.append("span")
+            .attr("class", "Label")
+            .text("Wahlbeteiligung");
+        information
+            .append("span")
+            .attr("class", "Text");
+
+        chart = content.append("div").style("display", "none");
+        chart.append("p")
+            .attr("class", "Label")
+            .text("Wahlergebnisse");
+        chart
+            .append("div")
+            .attr("class", "Content");
+
+        chart_width = 200;
+        chart_height = 200;
+    };
+
+    core.update_position = function (x, y) {
+        if (tooltip_visible) {
+
+            const dom_node = tooltip.node();
+
+            // horizontal correction, depending on whether the tooltip extends beyond the page
+            const new_x = (dom_node.offsetWidth + x + 10 > window.innerWidth)
+                ? x - 5 - dom_node.offsetWidth
+                : x + 5;
+
+            // vertical correction, depending on whether the tooltip extends beyond the page
+            const new_y = (dom_node.offsetHeight + y + 20 > window.innerHeight)
+                ? y - 85 - dom_node.offsetHeight
+                : y - 65;
+
+            dom_node.style.translate = `${new_x}px ${new_y}px`;
+        }
+    };
+
+    core.update_data = function (title, data) {
+
+        tooltip.select(".Title").text(title);
+
+        if (is_current_state(STATE.TURNOUT)) {
+            update_information(data.turnout);
+        } else if (is_current_state(STATE.DISTANCE)) {
+            update_chart(data.votings);
+        }
+
+        tooltip.style("display", "block");
+        tooltip_visible = true;
     };
 
     core.hide = function () {
-        if (turnout_visible) {
-            turnout.style("display", "none");
-            turnout_visible = false;
-        }
-        if (chart_visible) {
-            chart.style("display", "none");
-            chart_visible = false;
+        if (tooltip_visible) {
+            tooltip.style("display", "none");
+            tooltip_visible = false;
         }
     };
 
@@ -201,14 +186,10 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
 
 const mouse_enter = function (event, features) {
 
-    const zone = Data_Store.getItem(features.properties.id);
-    const name = features.properties.name;
-
-    if (current_mode === MODE.TURNOUT.id) {
-        Tooltip.update_turnout(name, zone.turnout);
-    } else if (current_mode === MODE.DISTANCE.id) {
-        Tooltip.update_votings(name, zone.votings);
-    }
+    Tooltip.update_data(
+        features.properties.name,
+        Data_Store.getItem(features.properties.id)
+    );
 
     d3.selectAll(".District")
         .transition()
@@ -237,14 +218,13 @@ const mouse_move = function (event) {
 
 const mouse_click = function (event, features) {
 
-    if (current_mode === MODE.DISTANCE.id) {
+    if (is_current_state(STATE.DISTANCE)) {
 
         const code = features.properties.id;
         const name = features.properties.name;
         const zone = Data_Store.getItem(code);
 
-        Tooltip.hide();
-        Tooltip.update_votings(name, zone.votings);
+        Tooltip.update_data(name, zone);
         Tooltip.update_position(event.clientX, event.clientY);
 
         d3.selectAll(".District")
@@ -264,7 +244,32 @@ const mouse_click = function (event, features) {
 
 };
 
-const create_data_map = function (dataset, container_class_name, options) {
+const reset_maps = function () {
+    d3.selectAll(".District")
+        .interrupt()
+        .transition()
+        .duration(500)
+        .style("opacity", 1)
+        .style("fill", "#ffffff");
+};
+
+const show_turnouts = function () {
+    d3.selectAll(".District")
+        .interrupt()
+        .transition()
+        .duration(500)
+        .style("opacity", 1)
+        .style("fill", d => {
+            let scale_value = 0;
+            if (hasProperty(d.properties, "id")) {
+                const zone = Data_Store.getItem(d.properties.id);
+                scale_value = zone.turnout;
+            }
+            return turnout_scale(scale_value);
+        });
+};
+
+const create_map = function (dataset, container_class_name, options) {
 
     // set dimensions if passed as aparameter via options
     // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/width#svg
@@ -303,8 +308,6 @@ const create_data_map = function (dataset, container_class_name, options) {
         .attr("class", "District")
         .attr("fill", d => {
 
-            let scale_value = 0;
-
             if (hasProperty(d.properties, "id")) {
 
                 const current_code = d.properties.id;
@@ -316,12 +319,11 @@ const create_data_map = function (dataset, container_class_name, options) {
                     {
                         votings: current_district.results,
                         turnout: current_district.turnout
-                    });
-
-                scale_value = current_district.turnout;
+                    }
+                );
             }
 
-            return turnout_scale(scale_value);
+            return "#ffffff";
         })
         .on("mouseenter", mouse_enter)
         .on("mouseleave", mouse_leave)
@@ -332,6 +334,8 @@ const create_data_map = function (dataset, container_class_name, options) {
 
 
 export {
-    create_data_map,
-    init
+    create_map,
+    init,
+    reset_maps,
+    show_turnouts
 };

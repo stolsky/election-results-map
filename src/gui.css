@@ -10,29 +10,44 @@
     height: calc(10% - 10px);
     display: flex;
     align-items: center;
+    gap: 5px;
 }
-.AppHeader .MainHeader {
+.AppHeader .MainHeader, .AppHeader .SubHeader {
     display: flex;
     flex-direction: column;
     background: #ffffff;
     padding: 5px;
 }
-.AppHeader .Title {
+.AppHeader .Seperator {
+    flex: 1;
+}
+.AppHeader .MainHeader .Title {
     font-weight: bold;
     text-transform: uppercase;
     font-size: 1.5em;
 }
-.AppHeader .Subtitle {
-    /* font-weight: bold;
-    text-transform: uppercase;
-    font-size: 1.5em; */
+.AppHeader .MainHeader .Subtitle {
+
+}
+.AppHeader .SubHeader {
+    max-width: 25%;
+    cursor: pointer;
+}
+.AppHeader .SubHeader.Active {
+    outline: 2px solid #000000;
+}
+.AppHeader .SubHeader .Title {
+    font-weight: bold;
+}
+.AppHeader .SubHeader .Description {
+    font-size: 0.9em;
 }
 
 .AppBody {
     display: grid;
-    height: calc(90% - 10px);
+    height: 90%;
     padding: 5px;
-    gap: 5px 10px;
+    gap: 5px;
 }
 
 .AppBody .Tooltip {
@@ -46,8 +61,11 @@
     box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
 }
 .AppBody .Tooltip .Title {
-    margin: 0 0 4px 0;
+    margin: 0;
     font-weight: bold;
+}
+.AppBody .Tooltip .Content div {
+    margin-top: 4px;
 }
 .AppBody .Tooltip .Content .Label::after {
     content: ":";
@@ -56,18 +74,19 @@
 .AppBody .Tooltip .Content .Text::after {
     content: "%";
 }
-.AppBody .Tooltip .ChartDescription {
+.AppBody .Tooltip .Label {
     margin: 0;
 }
 
 .AppBody .MapContainer {
-    
+    position: relative;
+    /* background-color: rgba(0, 0, 255, 0.3); */
 }
-
-.AppBody .MapContainer p {
-    margin-top: -10px;
+.AppBody .MapContainer .Name {
+    position: absolute;
+    bottom: 5px;
+    margin: 0;
 }
-
 .AppBody .MapContainer .Map path {
     stroke: #000;
     stroke-width: 2px;

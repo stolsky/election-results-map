@@ -101,7 +101,7 @@ Import.load_files(
         data.city_districts.election,
         {
             new_name: "results", // collection_name
-            // {party: "", votes: ""} // object_property1, ...
+            // {id: "", value: ""} // object_property1, ...
             query: "zweitstimmenanteile_" // to replace
         }
     );
@@ -134,24 +134,23 @@ Import.load_files(
 
 }).then(data => {
 
-    console.log(data);
-
     Visualization.init(
         {
             title: "Wahlergebnisse 2017",
             subtitle: "Visuelle Darstellung der Wahlergebnisse",
             area: "a b,a c",
             cols: "70% 30%"
-        }, {
+        },
+        {
             TURNOUT: {
                 id: 1,
                 title: "Wahlbeteiligung",
-                description: ""
+                description: "Farbliche Darstellung der Beteiligung in Prozent."
             },
             DISTANCE: {
                 id: 2,
                 title: "Abstand der Wahlergebnisse",
-                description: ""
+                description: "Farbliche Darstellung des Abstands des ausgewählten Ergebnisses zu allen anderen."
             }
         },
         data.parties

@@ -48,9 +48,9 @@ const convert_turnout_to_percent = function (dataset) {
     dataset.turnout = parseFloat((dataset.turnout.voted * 100 / dataset.turnout.eligible).toFixed(1));
 };
 
-const convert_votings_to_percent = function (dataset) {
+const convert_votings_to_percent = function (dataset, votes) {
     dataset.results = dataset.results.map(result => {
-        result.value = parseFloat((result.value * 100 / dataset.turnout).toFixed(1));
+        result.value = parseFloat((result.value * 100 / votes).toFixed(1));
         return result;
     });
 };
@@ -58,8 +58,9 @@ const convert_votings_to_percent = function (dataset) {
 const convert_to_percent = function (data_source) {
     if (data_source instanceof Array) {
         data_source.forEach(dataset => {
+            const votes = dataset.turnout.voted;
             convert_turnout_to_percent(dataset);
-            convert_votings_to_percent(dataset);
+            convert_votings_to_percent(dataset, votes);
         });
     }
 };
