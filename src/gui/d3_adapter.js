@@ -16,6 +16,7 @@ const get_party_property = (id, property) => parties.find(party => party.id === 
 
 const Tooltip = (function () {
 
+    let first_draw = true;
     let tooltip = null;
     let tooltip_visible = false;
 
@@ -29,6 +30,8 @@ const Tooltip = (function () {
 
     const init_chart = function (data) {
 
+        // TODO use d3.create(name) to store in variable not dom element
+
         const content = chart.select(".Content")
             .append("svg")
             .attr("width", chart_width + 20)
@@ -40,7 +43,7 @@ const Tooltip = (function () {
         x_axis = d3.scaleBand()
             .range([0, chart_width])
             .domain(data.map(d => get_party_property(d.id, "name")))
-            .padding(0.2);
+            .padding(0.5);
         content.append("g")
             .attr("transform", `translate(0, ${chart_height})`)
             .call(d3.axisBottom(x_axis))
@@ -62,26 +65,48 @@ const Tooltip = (function () {
         information.style("display", "block");
     };
 
-    const update_chart = function (data) {
+    const update_chart = function (data, show_back_bars) {
+
+        let duration = 1000;
+        if (first_draw) {
+            duration = 0;
+            first_draw = false;
+        }
 
         if (!x_axis && !y_axis) {
             init_chart(data);
         }
 
-        const content = chart.select("svg g").selectAll("rect")
+        const front_bars = chart.select("svg g").selectAll(".FrontBar")
             .data(data);
-
-        content
+        front_bars
             .enter()
             .append("rect")
-            .merge(content)
+            .attr("class", "FrontBar")
+            .merge(front_bars)
             .transition()
-            .duration(1000)
+            .duration(duration)
             .attr("x", d => x_axis(get_party_property(d.id, "name")))
             .attr("y", d => y_axis(d.value))
             .attr("width", x_axis.bandwidth())
             .attr("height", d => chart_height - y_axis(d.value))
             .attr("fill", d => get_party_property(d.id, "color"));
+
+        if (show_back_bars) {
+            const back_bars = chart.select("svg g").selectAll(".BackBar")
+                .data(data);
+            back_bars
+                .enter()
+                .append("rect")
+                .attr("class", "BackBar")
+                .merge(back_bars)
+                .lower()
+                .attr("x", d => x_axis(get_party_property(d.id, "name")) - 8)
+                .attr("y", d => y_axis(d.value))
+                .attr("width", x_axis.bandwidth())
+                .attr("height", d => chart_height - y_axis(d.value))
+                .attr("fill", "#aaaaaa");
+        }
 
         information.style("display", "none");
         chart.style("display", "block");
@@ -122,26 +147,26 @@ const Tooltip = (function () {
 
             // horizontal correction, depending on whether the tooltip extends beyond the page
             const new_x = (dom_node.offsetWidth + x + 10 > window.innerWidth)
-                ? x - 5 - dom_node.offsetWidth
+                ? x - 10 - dom_node.offsetWidth
                 : x + 5;
 
             // vertical correction, depending on whether the tooltip extends beyond the page
             const new_y = (dom_node.offsetHeight + y + 20 > window.innerHeight)
-                ? y - 85 - dom_node.offsetHeight
+                ? y - 90 - dom_node.offsetHeight
                 : y - 65;
 
             dom_node.style.translate = `${new_x}px ${new_y}px`;
         }
     };
 
-    core.update_data = function (title, data) {
+    core.update_data = function (title, data, show_back_bars = false) {
 
         tooltip.select(".Title").text(title);
 
         if (is_current_state(STATE.TURNOUT)) {
             update_information(data.turnout);
         } else if (is_current_state(STATE.DISTANCE)) {
-            update_chart(data.votings);
+            update_chart(data.votings, show_back_bars);
         }
 
         tooltip.style("display", "block");
@@ -224,7 +249,7 @@ const mouse_click = function (event, features) {
         const name = features.properties.name;
         const zone = Data_Store.getItem(code);
 
-        Tooltip.update_data(name, zone);
+        Tooltip.update_data(name, zone, true);
         Tooltip.update_position(event.clientX, event.clientY);
 
         d3.selectAll(".District")

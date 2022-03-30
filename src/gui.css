@@ -26,20 +26,30 @@
     text-transform: uppercase;
     font-size: 1.5em;
 }
-.AppHeader .MainHeader .Subtitle {
 
-}
-.AppHeader .SubHeader {
-    max-width: 25%;
-    cursor: pointer;
-}
-.AppHeader .SubHeader.Active {
-    outline: 2px solid #000000;
-}
 .AppHeader .SubHeader .Title {
     font-weight: bold;
 }
-.AppHeader .SubHeader .Description {
+.AppHeader .Categories {
+    display: flex;
+    gap: 5px;
+}
+.AppHeader .Categories .Category {
+    cursor: pointer;
+    text-underline-offset: 2px;
+}
+.AppHeader .Categories .Category:not(:last-child)::after {
+    content: "|";
+    margin-left: 5px;
+}
+.AppHeader .Categories .Category:hover {
+    color: #ff0000;
+    text-decoration: 2px underline;
+}
+.AppHeader .Categories .Category.Active {
+    text-decoration: 2px underline;
+}
+.AppHeader .Categories .Category .Description {
     font-size: 0.9em;
 }
 
@@ -90,4 +100,7 @@
 .AppBody .MapContainer .Map path {
     stroke: #000;
     stroke-width: 2px;
+}
+.AppBody .Tooltip .Content .FrontBar {
+    filter: drop-shadow(-1px 0px 1px rgba(0,0,0,0.5));
 }

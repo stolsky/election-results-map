@@ -37,10 +37,7 @@ const add_data_map = function (data, options) {
 
 };
 
-const is_current_state = (state) => {
-    console.log(current_state, state);
-    return current_state === state.id;
-};
+const is_current_state = (state) => current_state === state.id;
 
 /** Creates main structure of webpage with dynamic features.
  * Versatile customizable through options parameter.
@@ -67,34 +64,45 @@ const init = function (display_options, display_modes = null, data_source = null
     header.addComponent(new Container("Seperator"));
 
     if (display_modes instanceof Object) {
+
+        const subheader = new Container("SubHeader");
+        header.addComponent(subheader);
+
+        const categories_container = new Container("Categories");
+        const statusbar = new TextComponent(null, "Statusbar");
+        subheader.append(
+            new TextComponent("Kategorien", "Title"),
+            categories_container,
+            statusbar
+        );
+
         Object.values(display_modes).forEach(mode => {
-            const subheader = new Container("SubHeader");
-            subheader.addEventListener("click", () => {
-                if (subheader.hasClass("Active")) {
-                    subheader.removeClass("Active");
-                    reset_maps();
-                } else {
-                    header.getChildren()
-                        .filter(child => child.hasClass("Active"))
-                        .forEach(child => child.removeClass("Active"));
-                    subheader.addClass("Active");
-                    current_state = mode.id;
-                    if (mode.id === STATE.TURNOUT.id) {
-                        show_turnouts();
-                    } else if (mode.id === STATE.DISTANCE.id) {
-                        reset_maps();
-                    }
-                }
-            });
-            header.addComponent(subheader);
             if (hasProperty(mode, "title")) {
-                subheader.addComponent(new TextComponent(mode.title, "Title"));
-            }
-            if (hasProperty(mode, "description")) {
-                subheader.append(
-                    new Container("Icon"),
-                    new TextComponent(mode.description, "Description")
-                );
+                const category = new TextComponent(mode.title, "Category");
+                category.addEventListener("click", () => {
+                    if (category.hasClass("Active")) {
+                        category.removeClass("Active");
+                        reset_maps();
+                    } else {
+                        categories_container.getChildren()
+                            .filter(child => child.hasClass("Active"))
+                            .forEach(child => child.removeClass("Active"));
+                        category.addClass("Active");
+                        current_state = mode.id;
+                        if (mode.id === STATE.TURNOUT.id) {
+                            show_turnouts();
+                        } else if (mode.id === STATE.DISTANCE.id) {
+                            reset_maps();
+                        }
+                    }
+                });
+                categories_container.addComponent(category);
+                if (hasProperty(mode, "description")) {
+                    // category.append(
+                    //     new Container("Icon"),
+                    //     new TextComponent(mode.description, "Description")
+                    // );
+                }
             }
         });
     }
