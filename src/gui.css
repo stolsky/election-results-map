@@ -13,12 +13,13 @@
     gap: 5px;
 }
 .AppHeader .MainHeader, .AppHeader .SubHeader {
+    position: relative;
     display: flex;
     flex-direction: column;
     background: #ffffff;
     padding: 5px;
 }
-.AppHeader .Seperator {
+.AppHeader > .Seperator {
     flex: 1;
 }
 .AppHeader .MainHeader .Title {
@@ -30,27 +31,33 @@
 .AppHeader .SubHeader .Title {
     font-weight: bold;
 }
-.AppHeader .Categories {
+.AppHeader .SubHeader .Categories {
     display: flex;
     gap: 5px;
 }
-.AppHeader .Categories .Category {
+.AppHeader .SubHeader .Categories .Category {
     cursor: pointer;
     text-underline-offset: 2px;
 }
-.AppHeader .Categories .Category:not(:last-child)::after {
-    content: "|";
-    margin-left: 5px;
-}
-.AppHeader .Categories .Category:hover {
+.AppHeader .SubHeader .Categories .Category:hover {
     color: #ff0000;
     text-decoration: 2px underline;
 }
-.AppHeader .Categories .Category.Active {
+.AppHeader .SubHeader .Categories .Category.Active {
     text-decoration: 2px underline;
 }
-.AppHeader .Categories .Category .Description {
+.AppHeader .SubHeader .Categories .Seperator:last-child {
+    display: none;
+}
+.AppHeader .SubHeader .Description {
+    position: absolute;
+    display: none;
+    left: 0;
+    top: 50px;
+    padding: 5px;
     font-size: 0.9em;
+    font-style: italic;
+    background: #fff;
 }
 
 .AppBody {

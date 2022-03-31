@@ -69,17 +69,20 @@ const init = function (display_options, display_modes = null, data_source = null
         header.addComponent(subheader);
 
         const categories_container = new Container("Categories");
-        const statusbar = new TextComponent(null, "Statusbar");
+        const description = new TextComponent("", "Description");
         subheader.append(
             new TextComponent("Kategorien", "Title"),
             categories_container,
-            statusbar
+            description
         );
 
         Object.values(display_modes).forEach(mode => {
             if (hasProperty(mode, "title")) {
                 const category = new TextComponent(mode.title, "Category");
-                categories_container.addComponent(category);
+                categories_container.append(
+                    category,
+                    new TextComponent("|", "Seperator")
+                );
                 category.addEventListener("click", () => {
                     if (category.hasClass("Active")) {
                         category.removeClass("Active");
@@ -98,12 +101,16 @@ const init = function (display_options, display_modes = null, data_source = null
                         }
                     }
                 });
-                if (hasProperty(mode, "description")) {
-                    // category.append(
-                    //     new Container("Icon"),
-                    //     new TextComponent(mode.description, "Description")
-                    // );
-                }
+                category.addEventListener("mouseenter", () => {
+                    if (hasProperty(mode, "description")) {
+                        description.setStyle("display", "block");
+                        description.text = mode.description;
+                    }
+                });
+                category.addEventListener("mouseleave", () => {
+                    description.setStyle("display", "none");
+                    description.text = "";
+                });
             }
         });
     }
