@@ -20,7 +20,7 @@ const Tooltip = (function () {
     let tooltip = null;
     let tooltip_visible = false;
 
-    let information = null;
+    let textfield = null;
 
     let chart = null;
     let chart_width = 0;
@@ -29,8 +29,6 @@ const Tooltip = (function () {
     let y_axis = null;
 
     const init_chart = function (data) {
-
-        // TODO use d3.create(name) to store in variable not dom element
 
         // TODO set width related to number of datasets (bars) to represent
         chart_width = 200;
@@ -63,10 +61,13 @@ const Tooltip = (function () {
 
     };
 
-    const update_information = function (value) {
-        information.select(".Text").text(value);
-        chart.style("display", "none");
-        information.style("display", "block");
+    const reset_chart = function () {
+        chart.style("display", "none").select("svg g").selectAll(".BackBar")
+            .remove();
+    };
+
+    const reset_textfield = function () {
+        textfield.style("display", "none");
     };
 
     const update_chart = function (data, show_back_bars) {
@@ -81,7 +82,9 @@ const Tooltip = (function () {
             init_chart(data);
         }
 
-        const front_bars = chart.select("svg g").selectAll(".FrontBar")
+        textfield.style("display", "none");
+        const front_bars = chart.style("display", "block")
+            .select("svg g").selectAll(".FrontBar")
             .data(data);
         front_bars
             .enter()
@@ -112,24 +115,28 @@ const Tooltip = (function () {
                 .attr("fill", "#aaaaaa");
         }
 
-        information.style("display", "none");
-        chart.style("display", "block");
+    };
+
+    const update_textfield = function (value) {
+        chart.style("display", "none");
+        textfield.style("display", "block");
+        textfield.select(".Text").text(value);
     };
 
     const core = {};
 
-    // TODO make the structure (also title names, etc) customizable throug an options parameter
+    // TODO make the structure (also title names, etc) customizable through an options parameter
     core.init = function () {
 
         tooltip = d3.select(".AppBody").append("div").attr("class", "Tooltip");
         tooltip.append("p").attr("class", "Title");
         const content = tooltip.append("div").attr("class", "Content");
 
-        information = content.append("div").style("display", "none");
-        information.append("span")
+        textfield = content.append("div").style("display", "none");
+        textfield.append("span")
             .attr("class", "Label")
             .text("Wahlbeteiligung");
-        information
+        textfield
             .append("span")
             .attr("class", "Text");
 
@@ -143,18 +150,9 @@ const Tooltip = (function () {
 
     };
 
-    core.reset_chart = function () {
-        chart.select("svg g").selectAll(".BackBar")
-            .remove();
-            // .append("rect")
-            // .attr("class", "BackBar")
-            // .merge(back_bars)
-            // .lower()
-            // .attr("x", d => x_axis(get_party_property(d.id, "name")) - 8)
-            // .attr("y", d => y_axis(d.value))
-            // .attr("width", x_axis.bandwidth())
-            // .attr("height", d => chart_height - y_axis(d.value))
-            // .attr("fill", "#aaaaaa");
+    core.reset = function () {
+        reset_chart();
+        reset_textfield();
         core.hide();
     };
 
@@ -179,22 +177,15 @@ const Tooltip = (function () {
 
     core.update_data = function (title, data, show_back_bars = false) {
 
-        let show_tooltip = false;
         if (is_current_state(STATE.TURNOUT)) {
-            update_information(data.turnout);
-            show_tooltip = true;
+            update_textfield(data.turnout);
         } else if (is_current_state(STATE.DISTANCE)) {
             update_chart(data.votings, show_back_bars);
-            show_tooltip = true;
         }
 
-        if (show_tooltip) {
-            tooltip.select(".Title").text(title);
-            tooltip.style("display", "block");
-            tooltip_visible = true;
-        } else {
-            core.hide();
-        }
+        tooltip.select(".Title").text(title);
+        tooltip.style("display", "block");
+        tooltip_visible = true;
 
     };
 
@@ -204,7 +195,6 @@ const Tooltip = (function () {
     };
 
     return Object.freeze(core);
-
 })();
 
 const Data_Store = new Cache();
@@ -302,7 +292,7 @@ const reset_maps = function () {
         .style("opacity", 1)
         .style("fill", "#ffffff");
 
-    Tooltip.reset_chart();
+    Tooltip.reset();
 
 };
 
