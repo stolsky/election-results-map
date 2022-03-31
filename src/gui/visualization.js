@@ -79,10 +79,12 @@ const init = function (display_options, display_modes = null, data_source = null
         Object.values(display_modes).forEach(mode => {
             if (hasProperty(mode, "title")) {
                 const category = new TextComponent(mode.title, "Category");
+                categories_container.addComponent(category);
                 category.addEventListener("click", () => {
                     if (category.hasClass("Active")) {
                         category.removeClass("Active");
                         reset_maps();
+                        current_state = -1;
                     } else {
                         categories_container.getChildren()
                             .filter(child => child.hasClass("Active"))
@@ -96,7 +98,6 @@ const init = function (display_options, display_modes = null, data_source = null
                         }
                     }
                 });
-                categories_container.addComponent(category);
                 if (hasProperty(mode, "description")) {
                     // category.append(
                     //     new Container("Icon"),

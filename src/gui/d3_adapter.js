@@ -32,6 +32,10 @@ const Tooltip = (function () {
 
         // TODO use d3.create(name) to store in variable not dom element
 
+        // TODO set width related to number of datasets (bars) to represent
+        chart_width = 200;
+        chart_height = 200;
+
         const content = chart.select(".Content")
             .append("svg")
             .attr("width", chart_width + 20)
@@ -114,6 +118,7 @@ const Tooltip = (function () {
 
     const core = {};
 
+    // TODO make the structure (also title names, etc) customizable throug an options parameter
     core.init = function () {
 
         tooltip = d3.select(".AppBody").append("div").attr("class", "Tooltip");
@@ -136,8 +141,21 @@ const Tooltip = (function () {
             .append("div")
             .attr("class", "Content");
 
-        chart_width = 200;
-        chart_height = 200;
+    };
+
+    core.reset_chart = function () {
+        chart.select("svg g").selectAll(".BackBar")
+            .remove();
+            // .append("rect")
+            // .attr("class", "BackBar")
+            // .merge(back_bars)
+            // .lower()
+            // .attr("x", d => x_axis(get_party_property(d.id, "name")) - 8)
+            // .attr("y", d => y_axis(d.value))
+            // .attr("width", x_axis.bandwidth())
+            // .attr("height", d => chart_height - y_axis(d.value))
+            // .attr("fill", "#aaaaaa");
+        core.hide();
     };
 
     core.update_position = function (x, y) {
@@ -161,23 +179,28 @@ const Tooltip = (function () {
 
     core.update_data = function (title, data, show_back_bars = false) {
 
-        tooltip.select(".Title").text(title);
-
+        let show_tooltip = false;
         if (is_current_state(STATE.TURNOUT)) {
             update_information(data.turnout);
+            show_tooltip = true;
         } else if (is_current_state(STATE.DISTANCE)) {
             update_chart(data.votings, show_back_bars);
+            show_tooltip = true;
         }
 
-        tooltip.style("display", "block");
-        tooltip_visible = true;
+        if (show_tooltip) {
+            tooltip.select(".Title").text(title);
+            tooltip.style("display", "block");
+            tooltip_visible = true;
+        } else {
+            core.hide();
+        }
+
     };
 
     core.hide = function () {
-        if (tooltip_visible) {
-            tooltip.style("display", "none");
-            tooltip_visible = false;
-        }
+        tooltip.style("display", "none");
+        tooltip_visible = false;
     };
 
     return Object.freeze(core);
@@ -216,25 +239,26 @@ const mouse_enter = function (event, features) {
         Data_Store.getItem(features.properties.id)
     );
 
-    d3.selectAll(".District")
-        .transition()
-        .duration(200)
-        .style("opacity", 0.3);
+    // TODO optimize the highlighting of the selected part of the map
+    // d3.selectAll(".District")
+    //     .transition()
+    //     .duration(200)
+    //     .style("opacity", 0.3);
 
-    d3.select(this)
-        .transition()
-        .duration(200)
-        .style("opacity", 1);
+    // d3.select(this)
+    //     .transition()
+    //     .duration(200)
+    //     .style("opacity", 1);
 };
 
 const mouse_leave = function (event) {
 
     Tooltip.hide();
 
-    d3.selectAll(".District")
-        .transition()
-        .duration(200)
-        .style("opacity", 1);
+    // d3.selectAll(".District")
+    //     .transition()
+    //     .duration(200)
+    //     .style("opacity", 1);
 };
 
 const mouse_move = function (event) {
@@ -256,7 +280,7 @@ const mouse_click = function (event, features) {
             .interrupt()
             .transition()
             .duration(500)
-            .style("opacity", 1)
+            // .style("opacity", 1)
             .style("fill", d => {
                 let color = null;
                 if (hasProperty(d.properties, "id")) {
@@ -270,12 +294,16 @@ const mouse_click = function (event, features) {
 };
 
 const reset_maps = function () {
+
     d3.selectAll(".District")
         .interrupt()
         .transition()
         .duration(500)
         .style("opacity", 1)
         .style("fill", "#ffffff");
+
+    Tooltip.reset_chart();
+
 };
 
 const show_turnouts = function () {

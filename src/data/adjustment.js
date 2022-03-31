@@ -1,6 +1,7 @@
 
 import {hasProperty} from "../../lib/jst/native/typecheck.js";
 
+
 // only tested with 1 array inside a path
 const traverse_property_path = function (dataset, property_path) {
 
@@ -46,7 +47,7 @@ const replace_keys = function (data, ...keys) {
 
 };
 
-// TODO
+// TODO redesign proprietary method 
 /** PROPRIETARY METHOD!
  * Change the structure of given data.
  *
@@ -94,7 +95,6 @@ const unify_name = name => name
     .replace(/ö/, "oe")
     .replace(/ü/, "ue")
     .replace(/_/, " ");
-
 
 // TODO it very depends on the parties structure and election structure
 const sort_election_results = function (source_data, ...data_to_sort) {

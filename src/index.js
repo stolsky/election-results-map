@@ -46,15 +46,14 @@ Import.load_files(
         votes_type_column_id: 10,
         votes_type_value: "2", // use the second vote only
         votes_column_id: 11,
-        parties_names: parties.map(party => party.name)
+        parties_names: ["SPD", "CDU", "FDP", "GRÜNE", "DIE LINKE", "AfD"]
     };
 
-    // TODO do all aggregations -> calulate percentages of turnouts and votes and its precision to Evaluation
     return {
         parties,
         city_districts: {
             map: loaded_data[1],
-            election: loaded_data[2],
+            election: loaded_data[2], // TODO extract also turnout & votings
             population: null // loaded_data[3]
         },
         federal_state: {
