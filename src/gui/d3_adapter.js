@@ -163,15 +163,15 @@ const Tooltip = (function () {
 
             // horizontal correction, depending on whether the tooltip extends beyond the page
             const new_x = (dom_node.offsetWidth + x + 10 > window.innerWidth)
-                ? x - 10 - dom_node.offsetWidth
-                : x + 5;
+                ? x - 5 - dom_node.offsetWidth
+                : x + 10;
 
             // vertical correction, depending on whether the tooltip extends beyond the page
             const new_y = (dom_node.offsetHeight + y + 20 > window.innerHeight)
-                ? y - 90 - dom_node.offsetHeight
+                ? y - 85 - dom_node.offsetHeight
                 : y - 65;
 
-            dom_node.style.translate = `${new_x}px ${new_y}px`;
+            dom_node.style.transform = `translate(${new_x}px, ${new_y}px)`;
         }
     };
 
