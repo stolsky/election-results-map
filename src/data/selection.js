@@ -22,7 +22,7 @@ const extract_turnout = function (data_table, options) {
         return null;
     }
 
-    let turnout = data_table
+    const turnout = data_table
         .filter(col => col[options.group_column_id] === options.eligible_voters_key
             || col[options.group_column_id] === options.voters_key)
         .map(row => parseInt(row[options.votes_column_id], 10))
@@ -35,7 +35,6 @@ const extract_turnout = function (data_table, options) {
         return null;
     }
 
-    console.log(turnout);
     return {voted: turnout[0], eligible: turnout[1]};
 };
 
