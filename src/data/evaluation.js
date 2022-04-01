@@ -45,7 +45,9 @@ const calculate_distance = function (vector_x, vector_y = null) {
 };
 
 const convert_turnout_to_percent = function (dataset) {
+    console.log(dataset.turnout);
     dataset.turnout = parseFloat((dataset.turnout.voted * 100 / dataset.turnout.eligible).toFixed(1));
+    console.log(dataset.turnout);
 };
 
 const convert_votings_to_percent = function (dataset, votes) {

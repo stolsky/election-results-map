@@ -177,6 +177,8 @@ const Tooltip = (function () {
 
     core.update_data = function (title, data, show_back_bars = false) {
 
+        console.log(data);
+
         if (is_current_state(STATE.TURNOUT)) {
             update_textfield(data.turnout);
         } else if (is_current_state(STATE.DISTANCE)) {
