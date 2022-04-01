@@ -25,9 +25,10 @@ const extract_turnout = function (data_table, options) {
     let turnout = data_table
         .filter(col => col[options.group_column_id] === options.eligible_voters_key
             || col[options.group_column_id] === options.voters_key)
-        .map(row => parseInt(row[options.votes_column_id], 10));
-    console.log(turnout);
-    turnout = turnout.sort((a, b) => a > b); // sort from smallest to biggest
+        .map(row => parseInt(row[options.votes_column_id], 10))
+        // sort from smallest to biggest
+        // the compareFunction must return 1 for greater, -1 for smaller or 0 for equal
+        .sort((a, b) => a > b ? 1 : -1);
 
     // only 2 values remain: eligible voters (always the bigger number) and actual number of voters
     if (turnout.length !== 2) {
