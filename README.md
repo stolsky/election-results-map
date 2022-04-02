@@ -1,6 +1,14 @@
 # Open-Data Election Results
 A simple application that visualizes election results and their background information in various ways.
 
+### Table of Contents  
+* [Usage](#Usage)
+* [The data](#Data)
+* [Libraries and tools](#Tools) 
+* [Unit tests](#Tests) 
+
+<a name="Usage"/>
+
 ## Usage
 When you move the mouse over a region, the corresponding data is displayed in a window.
 You can specify which data should be displayed in this window by selecting the appropriate category. Currently there are two categories positioned on the top right of the screen: the voter turnout as "Turnout" and the distance of the election results to each other as "Distance of results".
@@ -10,6 +18,8 @@ The voter turnout is visualized with a colored scale representing a turnout betw
 
 ### Distance of results (Euclidean distance)
 The election result of a region is interpreted as a point (or n-tuple with the length of 5 to 6 in our case). This way we can calculate the difference between two results with the Euclidean distance.
+
+<a name="Data"/>
 
 ## The data
 For this application, the results of the federal elections in Germany are used.
@@ -33,8 +43,12 @@ Data on population structure will be included in the future.
 * Rostock (2017): https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_2017/bevoelkerungsstruktur_2017_insgesamt.json
 * Germany (2017, including all federal states): https://www.bundeswahlleiter.de/dam/jcr/f7566722-a528-4b18-bea3-ea419371e300/btw17_strukturdaten.csv
 
+<a name="Tools"/>
+
 ## Libraries and tools
 To present the data at hand, we use [D3.js](https://d3js.org) to display the bar charts and plot the GeoJSON data. To import the CSV files we use [Papa Parse](https://www.papaparse.com/).
+
+<a name="Tests"/>
 
 ## Unit tests
 We use the assertion library [Unit.js](https://unitjs.com/) in the browser with the test framework [Mocha.js](https://mochajs.org/).
