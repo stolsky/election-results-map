@@ -1,47 +1,47 @@
 
-/** Calculates the distance of two vectors.
- * If the second vector (parameter vector2) is omitted, the distance to the zero vector will be calculated.
+/** Calculates the distance of two points using Euclidean distance.
+ * If a parameter (point) is not of array type, it will be overwritten with an array full of zeros.
  *
- * @param {Array<number>} point1
- * @param {Array<number>} point2
- * @returns {number}
+ * @param {Array<number>} point_x
+ * @param {Array<number>} point_y
+ * @returns {number} the distance as number
  */
-const calculate_distance = function (vector_x, vector_y = null) {
+const calculate_distance = function (point_x, point_y = null) {
 
-    if (vector_x instanceof Array && vector_x.length > 0) {
-
-        if (!(vector_y instanceof Array)) {
-            vector_y = [];
-        }
-
-        // autofill the smaller vector with zeroes
-        if (vector_y.length !== vector_x.length) {
-
-            let smaller = null;
-            let bigger = null;
-
-            if (vector_x.length < vector_y.length) {
-                smaller = vector_x;
-                bigger = vector_y;
-            } else {
-                smaller = vector_y;
-                bigger = vector_x;
-            }
-
-            for (let i = smaller.length; i < bigger.length; i = i + 1) {
-                smaller[i] = 0;
-            }
-
-        }
-
-        let distance = 0;
-        for (let i = 0; i < vector_x.length; i = i + 1) {
-            distance = distance + Math.pow(vector_x[i] - vector_y[i], 2);
-        }
-        return Math.sqrt(distance);
+    if (!(point_x instanceof Array)) {
+        point_x = [];
     }
 
-    return null;
+    if (!(point_y instanceof Array)) {
+        point_y = [];
+    }
+
+    // autofill the smaller point with zeroes
+    if (point_y.length !== point_x.length) {
+
+        let smaller = null;
+        let bigger = null;
+
+        if (point_x.length < point_y.length) {
+            smaller = point_x;
+            bigger = point_y;
+        } else {
+            smaller = point_y;
+            bigger = point_x;
+        }
+
+        for (let i = smaller.length; i < bigger.length; i = i + 1) {
+            smaller[i] = 0;
+        }
+
+    }
+
+    let distance = 0;
+    for (let i = 0; i < point_x.length; i = i + 1) {
+        distance = distance + Math.pow(point_x[i] - point_y[i], 2);
+    }
+    return Math.sqrt(distance);
+
 };
 
 const convert_turnout_to_percent = function (dataset) {
