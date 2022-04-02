@@ -6,6 +6,8 @@ import {Cache} from "../../lib/jst/resource/cache.js";
 import {calculate_distance} from "../data/evaluation.js";
 
 
+const REGION_DEFAULT_COLOR = "#C7D5D7";
+
 let parties = null;
 
 let distance_scale = null;
@@ -70,7 +72,7 @@ const Tooltip = (function () {
         textfield.style("display", "none");
     };
 
-    const update_chart = function (data, show_back_bars) {
+    const update_chart = function (data, update_back_bars) {
 
         let duration = 1000;
         if (first_draw) {
@@ -99,7 +101,7 @@ const Tooltip = (function () {
             .attr("height", d => chart_height - y_axis(d.value))
             .attr("fill", d => get_party_property(d.id, "color"));
 
-        if (show_back_bars) {
+        if (update_back_bars) {
             const back_bars = chart.select("svg g").selectAll(".BackBar")
                 .data(data);
             back_bars
@@ -175,14 +177,12 @@ const Tooltip = (function () {
         }
     };
 
-    core.update_data = function (title, data, show_back_bars = false) {
-
-        console.log(data);
+    core.update_data = function (title, data, update_back_bars = false) {
 
         if (is_current_state(STATE.TURNOUT)) {
             update_textfield(data.turnout);
         } else if (is_current_state(STATE.DISTANCE)) {
-            update_chart(data.votings, show_back_bars);
+            update_chart(data.votings, update_back_bars);
         }
 
         tooltip.select(".Title").text(title);
@@ -201,14 +201,16 @@ const Tooltip = (function () {
 
 const Data_Store = new Cache();
 
+// TODO set scale intervals and colors through option parameter
 const init = function (parties_info) {
 
     if (parties_info) {
         parties = parties_info;
     }
 
-    distance_scale = d3.scaleSequential(d3.interpolate("white", "purple"))
-        .domain([0, 50]);
+    distance_scale = d3.scaleSequential()
+        .domain([0, 50]) // TODO test .domain(d3.range(90, 0, -10))
+        .interpolator(d3.interpolateRdYlBu);
 
     turnout_scale = d3.scaleSequential()
         .domain([50, 90])
@@ -225,32 +227,27 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
 );
 
 const mouse_enter = function (event, features) {
-
     Tooltip.update_data(
         features.properties.name,
         Data_Store.getItem(features.properties.id)
     );
 
-    // TODO optimize the highlighting of the selected part of the map
-    // d3.selectAll(".District")
-    //     .transition()
-    //     .duration(200)
-    //     .style("opacity", 0.3);
-
-    // d3.select(this)
-    //     .transition()
-    //     .duration(200)
-    //     .style("opacity", 1);
+    d3.select(this)
+        .raise()
+        .interrupt()
+        .transition()
+        .duration(200)
+        .style("stroke", "#000000");
 };
 
 const mouse_leave = function (event) {
-
     Tooltip.hide();
 
-    // d3.selectAll(".District")
-    //     .transition()
-    //     .duration(200)
-    //     .style("opacity", 1);
+    d3.select(this)
+        .interrupt()
+        .transition()
+        .duration(200)
+        .style("stroke", "#ffffff");
 };
 
 const mouse_move = function (event) {
@@ -272,7 +269,6 @@ const mouse_click = function (event, features) {
             .interrupt()
             .transition()
             .duration(500)
-            // .style("opacity", 1)
             .style("fill", d => {
                 let color = null;
                 if (hasProperty(d.properties, "id")) {
@@ -281,6 +277,7 @@ const mouse_click = function (event, features) {
                 }
                 return color;
             });
+
     }
 
 };
@@ -292,7 +289,7 @@ const reset_maps = function () {
         .transition()
         .duration(500)
         .style("opacity", 1)
-        .style("fill", "#ffffff");
+        .style("fill", REGION_DEFAULT_COLOR);
 
     Tooltip.reset();
 
@@ -368,7 +365,7 @@ const create_map = function (dataset, container_class_name, options) {
                 );
             }
 
-            return "#ffffff";
+            return REGION_DEFAULT_COLOR;
         })
         .on("mouseenter", mouse_enter)
         .on("mouseleave", mouse_leave)

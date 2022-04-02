@@ -2,7 +2,8 @@
 @import url(../lib/jst/dom/gui.css);
 
 .Application {
-    background-image: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+    /* background-image: linear-gradient(to bottom, #f5f7fa, #c3cfe2); */
+    background-color: #ffffff;
 }
 
 .AppHeader {
@@ -18,9 +19,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #ffffff;
+    background: #f5f7fa;
     padding: 5px;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
 }
 .AppHeader > .Seperator {
     flex: 1;
@@ -29,6 +30,9 @@
     font-weight: bold;
     text-transform: uppercase;
     font-size: 1.5em;
+}
+.AppHeader .MainHeader .Subtitle {
+    font-style: italic;
 }
 
 .AppHeader .SubHeader .Title {
@@ -43,7 +47,7 @@
     text-underline-offset: 2px;
 }
 .AppHeader .SubHeader .Categories .Category:hover {
-    color: #ff0000;
+    color: #C6404C;
     text-decoration: 2px underline;
 }
 .AppHeader .SubHeader .Categories .Category.Active {
@@ -60,8 +64,8 @@
     padding: 5px;
     font-size: 0.9em;
     font-style: italic;
-    background: #fff;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+    background: #f5f7fa;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
 .AppBody {
@@ -80,7 +84,7 @@
     border-radius: 5px;
     padding: 5px;
     font-size: 0.9em;
-    background-color: #ffffff;
+    background-color: #f5f7fa;
     box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
 }
 .AppBody .Tooltip .Title {
@@ -103,17 +107,17 @@
 
 .AppBody .MapContainer {
     position: relative;
-    /* background-color: rgba(0, 0, 255, 0.3); */
 }
 .AppBody .MapContainer .Name {
     position: absolute;
     bottom: 5px;
     margin: 0;
 }
-.AppBody .MapContainer .Map path {
-    stroke: #000;
+.AppBody .MapContainer .Map .District {
+    stroke: #ffffff;
     stroke-width: 2px;
+    stroke-linejoin: bevel;
 }
 .AppBody .Tooltip .Content .FrontBar {
-    filter: drop-shadow(-1px 0px 1px rgba(0,0,0,0.5));
+    filter: drop-shadow(-1px 0px 1px rgba(0, 0, 0, 0.5));
 }

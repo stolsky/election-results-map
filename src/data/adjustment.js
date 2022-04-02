@@ -47,7 +47,7 @@ const replace_keys = function (data, ...keys) {
 
 };
 
-// TODO redesign proprietary method 
+// TODO redesign proprietary method
 /** PROPRIETARY METHOD!
  * Change the structure of given data.
  *
