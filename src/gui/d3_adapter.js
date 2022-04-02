@@ -209,8 +209,8 @@ const init = function (parties_info) {
     }
 
     distance_scale = d3.scaleSequential()
-        .domain([0, 50]) // TODO test .domain(d3.range(90, 0, -10))
-        .interpolator(d3.interpolateRdYlBu);
+        .domain([25, 0]) // TODO test .domain(d3.range(90, 0, -10))
+        .interpolator(d3.interpolateYlOrRd);
 
     turnout_scale = d3.scaleSequential()
         .domain([50, 90])
@@ -223,8 +223,7 @@ const calculate_color_from_votings = (votings1, votings2) => distance_scale(
     calculate_distance(
         votings1.map(result => result.value),
         votings2.map(result => result.value)
-    )
-);
+    ));
 
 const mouse_enter = function (event, features) {
     Tooltip.update_data(
