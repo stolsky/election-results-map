@@ -35,4 +35,4 @@ Data on population structure will be included in the future.
 
 ## Unit tests
 We use the assertion library [Unit.js](https://unitjs.com/) in the browser with the test framework [Mocha.js](https://mochajs.org/).
-All the tests are stored in the directory "test". To run the tests, execute "index.html" in a browser.
+All the tests are stored in the directory "test". To run these tests, execute `test/index.html` in a browser.
