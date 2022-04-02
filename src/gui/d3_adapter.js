@@ -208,6 +208,7 @@ const init = function (parties_info) {
         parties = parties_info;
     }
 
+    // TODO calculate the range from the data to be used
     distance_scale = d3.scaleSequential()
         .domain([25, 0]) // TODO test .domain(d3.range(90, 0, -10))
         .interpolator(d3.interpolateYlOrRd);

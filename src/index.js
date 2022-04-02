@@ -144,12 +144,12 @@ Import.load_files(
             TURNOUT: {
                 id: 1,
                 title: "Wahlbeteiligung",
-                description: "Farbliche Darstellung der Beteiligung in Prozent."
+                description: "Farbliche Darstellung der Wahlbeteiligung in Prozent."
             },
             DISTANCE: {
                 id: 2,
                 title: "Abstand der Wahlergebnisse",
-                description: "Farbliche Darstellung des Abstands des ausgewählten Ergebnisses zu allen anderen."
+                description: "Farbliche Darstellung des Abstands der ausgewählten Region zu allen anderen."
             }
         },
         data.parties

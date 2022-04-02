@@ -32,3 +32,7 @@ Data on population structure will be included in the future.
 
 * Rostock (2017): https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_2017/bevoelkerungsstruktur_2017_insgesamt.json
 * Germany (2017, including all federal states): https://www.bundeswahlleiter.de/dam/jcr/f7566722-a528-4b18-bea3-ea419371e300/btw17_strukturdaten.csv
+
+## Unit tests
+We use the assertion library [Unit.js](https://unitjs.com/) in the browser with the test framework [Mocha.js](https://mochajs.org/).
+All the tests are stored in the directory "test". To run the tests, execute "index.html" in a browser.
