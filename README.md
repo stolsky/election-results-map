@@ -3,7 +3,7 @@ A simple application that visualizes election results and their background infor
 
 ### Table of Contents  
 * [Usage](#Usage)
-* [The data](#Data)
+* [Used data](#Data)
 * [Libraries and tools](#Tools) 
 * [Unit tests](#Tests) 
 
@@ -21,7 +21,7 @@ The election result of a region is interpreted as a point (or n-tuple with the l
 
 <a name="Data"/>
 
-## The data
+## Used data
 For this application, the results of the federal elections in Germany are used.
 The goal is to test our application with data from 2002, 2005, 2009, 2013, 2017 and 2021.
 
