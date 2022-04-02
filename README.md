@@ -11,7 +11,7 @@ The voter turnout is visualized with a colored scale representing a turnout betw
 ### Distance of results (Euclidean distance)
 The election result of a region is interpreted as a point (or n-tuple with the length of 5 to 6 in our case). This way we can calculate the difference between two results with the Euclidean distance.
 
-## Data used
+## The data
 For this application, the results of the federal elections in Germany are used.
 The goal is to test our application with data from 2002, 2005, 2009, 2013, 2017 and 2021.
 
@@ -32,6 +32,9 @@ Data on population structure will be included in the future.
 
 * Rostock (2017): https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_2017/bevoelkerungsstruktur_2017_insgesamt.json
 * Germany (2017, including all federal states): https://www.bundeswahlleiter.de/dam/jcr/f7566722-a528-4b18-bea3-ea419371e300/btw17_strukturdaten.csv
+
+## Libraries and tools
+To present the data at hand, we use [D3.js](https://d3js.org) to display the bar charts and plot the GeoJSON data. To import the CSV files we use [Papa Parse](https://www.papaparse.com/).
 
 ## Unit tests
 We use the assertion library [Unit.js](https://unitjs.com/) in the browser with the test framework [Mocha.js](https://mochajs.org/).
