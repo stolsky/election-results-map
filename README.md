@@ -52,4 +52,4 @@ To present the data at hand, we use [D3.js](https://d3js.org) to display the bar
 
 ## Unit tests
 We use the assertion library [Unit.js](https://unitjs.com/) in the browser with the test framework [Mocha.js](https://mochajs.org/).
-All the tests are stored in the directory "test". To run these tests, execute `test/index.html` in a browser or follow this [link to view the tests](https://w0lf3n.github.io/Open-Data-Election-Results/test/index.html) online.
+All the tests are stored in the directory "test". **The tests unfortunately only run successfully under Firefox at the moment.** To run these tests, execute `test/index.html` in a browser or follow this [link to view the tests](https://w0lf3n.github.io/Open-Data-Election-Results/test/index.html) online.
