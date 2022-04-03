@@ -16,8 +16,10 @@
     <script src="unit.js"></script>
 
     <script class="mocha-init">
-        mocha.setup("bdd");
-        mocha.checkLeaks();
+        mocha.setup({
+          checkLeaks: true,
+          ui: "bdd"
+        });
     </script>
 
     <!-- <script type="module" src="test.js"></script> -->

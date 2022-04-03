@@ -17,7 +17,7 @@ You can specify which data should be displayed in this window by selecting the a
 The voter turnout is visualized with a colored scale representing a turnout between 50 and 90 percent. The colors from red to green are assigned to this interval accordingly.
 
 ### Distance of results (Euclidean distance)
-The election result of a region is interpreted as a point (or n-tuple with the length of 5 to 6 in our case). This way we can calculate the difference between two results with the Euclidean distance.
+The election result of a region is interpreted as a point (or n-tuple with the length of 5 to 6 in our case). This way we can calculate the difference between two results with the Euclidean distance. Now we can color the difference between the result of one region and the results of all other regions. The colors from yellow to red are used to visualize these differences.
 
 <a name="Data"/>
 
