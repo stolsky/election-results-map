@@ -59,7 +59,9 @@ Data on population structure will be included in the future.
 ## Libraries and tools
 <br />
 
-To present the data at hand, we use [D3.js](https://d3js.org) to display the bar charts and plot the GeoJSON data. To import the CSV files we use [Papa Parse](https://www.papaparse.com/).
+To present the data at hand, we use [D3.js](https://d3js.org) to display the bar charts and plot the GeoJSON data.
+
+To import the CSV files we use [Papa Parse](https://www.papaparse.com/).
 
 <br />
 <a name="Tests"></a>
