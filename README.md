@@ -1,15 +1,22 @@
 # Open-Data Election Results
 A simple application that visualizes election results and their background information in various ways.
 
-### Table of Contents  
-* [Usage](#Usage)
-* [Used data](#Data)
-* [Libraries and tools](#Tools) 
-* [Unit tests](#Tests) 
+<br />
 
-<a name="Usage"/>
+### Table of Contents  
+[Usage](#Usage)  
+[Used data](#Data)  
+[Libraries and tools](#Tools)  
+[Unit tests](#Tests)  
+
+---
+
+<br />
+<a name="Usage"></a>
 
 ## Usage
+<br />
+
 When you move the mouse over a region, the corresponding data is displayed in a window.
 You can specify which data should be displayed in this window by selecting the appropriate category. Currently there are two categories positioned on the top right of the screen: the voter turnout as "Turnout" and the distance of the election results to each other as "Distance of results".
 
@@ -19,9 +26,16 @@ The voter turnout is visualized with a colored scale representing a turnout betw
 ### Distance of results (Euclidean distance)
 The election result of a region is interpreted as a point (or n-tuple with the length of 5 to 6 in our case). This way we can calculate the difference between two results with the Euclidean distance. Now we can color the difference between the result of one region and the results of all other regions. The colors from yellow to red are used to visualize these differences.
 
-<a name="Data"/>
+**[View the demo](https://w0lf3n.github.io/Open-Data-Election-Results/)**
+
+---
+
+<br />
+<a name="Data"></a>
 
 ## Used data
+<br />
+
 For this application, the results of the federal elections in Germany are used.
 The goal is to test our application with data from 2002, 2005, 2009, 2013, 2017 and 2021.
 
@@ -43,13 +57,23 @@ Data on population structure will be included in the future.
 * Rostock (2017): https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_2017/bevoelkerungsstruktur_2017_insgesamt.json
 * Germany (2017, including all federal states): https://www.bundeswahlleiter.de/dam/jcr/f7566722-a528-4b18-bea3-ea419371e300/btw17_strukturdaten.csv
 
-<a name="Tools"/>
+---
+
+<br />
+<a name="Tools"></a>
 
 ## Libraries and tools
+<br />
+
 To present the data at hand, we use [D3.js](https://d3js.org) to display the bar charts and plot the GeoJSON data. To import the CSV files we use [Papa Parse](https://www.papaparse.com/).
 
-<a name="Tests"/>
+---
+
+<br />
+<a name="Tests"></a>
 
 ## Unit tests
+<br />
+
 We use the assertion library [Unit.js](https://unitjs.com/) in the browser with the test framework [Mocha.js](https://mochajs.org/).
 All the tests are stored in the directory "test". **The tests unfortunately only run successfully under Firefox at the moment.** To run these tests, execute `test/index.html` in a browser or follow this [link to view the tests](https://w0lf3n.github.io/Open-Data-Election-Results/test/index.html) online.
