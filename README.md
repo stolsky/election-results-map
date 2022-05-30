@@ -9,8 +9,6 @@ A simple application that visualizes election results and their background infor
 [Libraries and tools](#Tools)  
 [Unit tests](#Tests)  
 
----
-
 <br />
 <a name="Usage"></a>
 
@@ -27,8 +25,6 @@ The voter turnout is visualized with a colored scale representing a turnout betw
 The election result of a region is interpreted as a point (or n-tuple with the length of 5 to 6 in our case). This way we can calculate the difference between two results with the Euclidean distance. Now we can color the difference between the result of one region and the results of all other regions. The colors from yellow to red are used to visualize these differences.
 
 **[View the demo](https://w0lf3n.github.io/Open-Data-Election-Results/)**
-
----
 
 <br />
 <a name="Data"></a>
@@ -57,8 +53,6 @@ Data on population structure will be included in the future.
 * Rostock (2017): https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_2017/bevoelkerungsstruktur_2017_insgesamt.json
 * Germany (2017, including all federal states): https://www.bundeswahlleiter.de/dam/jcr/f7566722-a528-4b18-bea3-ea419371e300/btw17_strukturdaten.csv
 
----
-
 <br />
 <a name="Tools"></a>
 
@@ -66,8 +60,6 @@ Data on population structure will be included in the future.
 <br />
 
 To present the data at hand, we use [D3.js](https://d3js.org) to display the bar charts and plot the GeoJSON data. To import the CSV files we use [Papa Parse](https://www.papaparse.com/).
-
----
 
 <br />
 <a name="Tests"></a>
