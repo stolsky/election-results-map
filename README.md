@@ -78,5 +78,6 @@ All the tests are stored in the directory "test". **The tests unfortunately only
 
 ## Class Diagram
 <br />
+
 [current diagram](https://github.com/w0lf3n/Open-Data-Election-Results/issues/22#issuecomment-1086882341)
 
