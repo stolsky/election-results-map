@@ -8,6 +8,7 @@ A simple application that visualizes election results and their background infor
 [Used data](#Data)  
 [Libraries and tools](#Tools)  
 [Unit tests](#Tests)  
+[Class Diagram](#Diagram)
 
 <br />
 <a name="Usage"></a>
@@ -71,3 +72,11 @@ To import the CSV files we use [Papa Parse](https://www.papaparse.com/).
 
 We use the assertion library [Unit.js](https://unitjs.com/) in the browser with the test framework [Mocha.js](https://mochajs.org/).
 All the tests are stored in the directory "test". **The tests unfortunately only run successfully under Firefox at the moment.** To run these tests, execute `test/index.html` in a browser or follow this [link to view the tests](https://w0lf3n.github.io/Open-Data-Election-Results/test/index.html) online.
+
+<br />
+<a name="Diagram"></a>
+
+## Class Diagram
+<br />
+[current diagram](https://github.com/w0lf3n/Open-Data-Election-Results/issues/22#issuecomment-1086880062)
+
