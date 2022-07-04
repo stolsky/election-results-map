@@ -1,34 +1,32 @@
 {
-    "plugins": [
-        "security"
-    ],
-    "env": {
-        "browser": true,
-        "es2021": true,
-        "node": true
+    "name": "iq-worklist-scheduler",
+    "version": "1.1.0",
+    "description": "iQ-WORKLIST SCHEDULER is a web-based graphical front-end for iQ-WORKLIST to schedule procedures in a DICOM environment.",
+    "type": "module",
+    "main": "src/server/index.js",
+    "scripts": {
+        "start": "node .",
+        "tests": "mocha",
+        "prebuild": "npm pack",
+        "build": "tar -xf %npm_package_name%-%npm_package_version%.tgz && ren package iQ-WORKLIST_SCHEDULER && tar -a -cf iQ-WORKLIST_SCHEDULER_%npm_package_version%_Setup.zip iQ-WORKLIST_SCHEDULER",
+        "postbuild": "rd /s /q iQ-WORKLIST_SCHEDULER && del %npm_package_name%-%npm_package_version%.tgz"
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:import/recommended",
-        "plugin:security/recommended",
-        "airbnb-base"
+    "keywords": [
+        "iQ-WORKLIST SCHEDULER",
+        "iQ-WORKLIST"
     ],
-    "parserOptions": {
-        "ecmaVersion": 13,
-        "sourceType": "module"
+    "author": "Stephan Olschowsky",
+    "license": "SEE LICENSE IN iQ-WORKLIST SCHEDULER 1.1 EULA CON INT EN - 001R.rtf",
+    "devDependencies": {
+        "chai": "^4.3.6",
+        "eslint": "^8.14.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-security": "^1.5.0",
+        "mocha": "^10.0.0"
     },
-    "rules": {
-        "camelcase": "off",
-        "comma-dangle": ["error", "never"],
-        "no-console": "off",
-        "import/extensions": ["error", "always"],
-        "indent": ["error", 4],
-        "linebreak-style": ["error", "windows"],
-        "max-len": "off",
-        "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 0 }],
-        "object-curly-newline": ["error", {"ObjectExpression": {"multiline": true}, "ImportDeclaration": {"multiline": true}}],
-        "operator-assignment": ["error", "never"],
-        "padded-blocks": "off",
-        "quotes": ["error", "double"]
-    }
+    "dependencies": {
+        "node-windows": "^1.0.0-beta.6"
+    },
+    "bundledDependencies": true
 }
