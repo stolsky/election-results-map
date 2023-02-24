@@ -1,8 +1,4 @@
-/* global
-    describe,
-    it,
-    unitjs
-*/
+/* global describe, it, unitjs */
 
 import {calculate_distance, convert_to_percent} from "../src/data/evaluation.js";
 
