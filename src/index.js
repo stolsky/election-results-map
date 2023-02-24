@@ -16,9 +16,11 @@ Import.load_files(
 
     // {name: "https://geo.sv.rostock.de/download/opendata/bundestagswahl_2017/bundestagswahl_2017_ergebnisse.json"},
     {name: "dat/btw_2017_hro_districts.json"},
+    // {name: "dat/btw_2021_hro_districts.json"},
 
     // {name: "https://geo.sv.rostock.de/download/opendata/bevoelkerungsstruktur_2017/bevoelkerungsstruktur_2017_insgesamt.json"},
     {name: "dat/structure_2017_hro_districts.json"},
+    // {name: "dat/structure_2021_hro_districts.json"},
 
     {name: "dat/mecklenburgvorpommern.geo.json"},
     {name: "dat/germany.geo.json"},
@@ -84,6 +86,8 @@ Import.load_files(
     // key mapping like "code"->"id", "bezeichnung"->"name"
     // use generic key names used in evaluate and visualize
 
+    console.log(data.city_districts);
+
     Adjustment.replace_keys(
         data,
 
@@ -114,6 +118,8 @@ Import.load_files(
 
     data.country.map.features[0].properties.id = "DE";
     data.country.map.features[0].properties.name = "Deutschland";
+
+    console.log(data.city_districts);
 
     return data;
 
