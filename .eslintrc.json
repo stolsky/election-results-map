@@ -26,8 +26,6 @@
         "linebreak-style": ["error", "windows"],
         "max-len": "off",
         "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 0 }],
-        "object-curly-newline": ["error", {"ObjectExpression": {"multiline": true}, "ImportDeclaration": {"multiline": true}}],
-        "operator-assignment": ["error", "never"],
         "padded-blocks": "off",
         "quotes": ["error", "double"]
     }

@@ -1,7 +1,6 @@
 /* global d3 */
 
-import {is_current_state, STATE} from "./visualization.js";
-
+import { DISPLAY_MODES, get_current_state } from "./state.js";
 
 let first_draw = true;
 let tooltip = null;
@@ -17,9 +16,9 @@ let y_axis = null;
 
 let parties = null;
 
-const get_party_property = (id, property) => parties.find(party => party.id === id)[property];
+const get_party_property = (id, property) => parties.find((party) => party.id === id)[`${property}`];
 
-const init_chart = function (data) {
+const init_chart = (data) => {
 
     // TODO set width related to number of datasets (bars) to represent
     chart_width = 200;
@@ -31,11 +30,11 @@ const init_chart = function (data) {
         .attr("height", chart_height + 40)
         .style("overflow", "visible")
         .append("g")
-        .attr("transform", "translate(" + 20 + "," + 10 + ")");
+        .attr("transform", `translate(${20}, ${10})`);
 
     x_axis = d3.scaleBand()
         .range([0, chart_width])
-        .domain(data.map(d => get_party_property(d.id, "name")))
+        .domain(data.map((d) => get_party_property(d.id, "name")))
         .padding(0.5);
     content.append("g")
         .attr("transform", `translate(0, ${chart_height})`)
@@ -52,16 +51,15 @@ const init_chart = function (data) {
 
 };
 
-const reset_chart = function () {
-    chart.style("display", "none").select("svg g").selectAll(".BackBar")
-        .remove();
-};
+const reset_chart = () => chart
+    .style("display", "none")
+    .select("svg g")
+    .selectAll(".BackBar")
+    .remove();
 
-const reset_textfield = function () {
-    textfield.style("display", "none");
-};
+const reset_textfield = () => textfield.style("display", "none");
 
-const update_chart = function (data, update_back_bars) {
+const update_chart = (data, update_back_bars) => {
 
     let duration = 1000;
     if (first_draw) {
@@ -84,11 +82,11 @@ const update_chart = function (data, update_back_bars) {
         .merge(front_bars)
         .transition()
         .duration(duration)
-        .attr("x", d => x_axis(get_party_property(d.id, "name")))
-        .attr("y", d => y_axis(d.value))
+        .attr("x", (d) => x_axis(get_party_property(d.id, "name")))
+        .attr("y", (d) => y_axis(d.value))
         .attr("width", x_axis.bandwidth())
-        .attr("height", d => chart_height - y_axis(d.value))
-        .attr("fill", d => get_party_property(d.id, "color"));
+        .attr("height", (d) => chart_height - y_axis(d.value))
+        .attr("fill", (d) => get_party_property(d.id, "color"));
 
     if (update_back_bars) {
         const back_bars = chart.select("svg g").selectAll(".BackBar")
@@ -99,23 +97,23 @@ const update_chart = function (data, update_back_bars) {
             .attr("class", "BackBar")
             .merge(back_bars)
             .lower()
-            .attr("x", d => x_axis(get_party_property(d.id, "name")) - 8)
-            .attr("y", d => y_axis(d.value))
+            .attr("x", (d) => x_axis(get_party_property(d.id, "name")) - 8)
+            .attr("y", (d) => y_axis(d.value))
             .attr("width", x_axis.bandwidth())
-            .attr("height", d => chart_height - y_axis(d.value))
+            .attr("height", (d) => chart_height - y_axis(d.value))
             .attr("fill", "#aaaaaa");
     }
 
 };
 
-const update_textfield = function (value) {
+const update_textfield = (value) => {
     chart.style("display", "none");
     textfield.style("display", "block");
     textfield.select(".Text").text(value);
 };
 
 // TODO make the structure (also title names, etc) customizable through an options parameter
-const init = function (parties_info) {
+const init = (parties_info) => {
 
     if (parties_info) {
         parties = parties_info;
@@ -143,22 +141,22 @@ const init = function (parties_info) {
 
 };
 
-const hide = function () {
+const hide = () => {
     tooltip.style("display", "none");
     tooltip_visible = false;
 };
 
-const reset = function () {
+const reset = () => {
     reset_chart();
     reset_textfield();
     hide();
 };
 
-const update_data = function (title, data, update_back_bars = false) {
+const update_data = (title, data, update_back_bars = false) => {
 
-    if (is_current_state(STATE.TURNOUT)) {
+    if (get_current_state() === DISPLAY_MODES.TURNOUT) {
         update_textfield(data.turnout);
-    } else if (is_current_state(STATE.DISTANCE)) {
+    } else if (get_current_state() === DISPLAY_MODES.DISTANCE) {
         update_chart(data.votings, update_back_bars);
     }
 
@@ -168,7 +166,7 @@ const update_data = function (title, data, update_back_bars = false) {
 
 };
 
-const update_position = function (x, y) {
+const update_position = (x, y) => {
     if (tooltip_visible) {
 
         const dom_node = tooltip.node();

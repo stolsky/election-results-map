@@ -3,7 +3,7 @@ A simple application that visualizes election results and their background infor
 
 <br />
 
-### Table of Contents  
+## Table of Contents  
 [Usage](#Usage)  
 [Used data](#Data)  
 [Libraries and tools](#Tools)  
@@ -30,7 +30,7 @@ The election result of a region is interpreted as a point (or n-tuple with the l
 <br />
 <a name="Data"></a>
 
-## Used data
+## Resources
 <br />
 
 For this application, the results of the federal elections in Germany are used.
@@ -70,8 +70,8 @@ To import the CSV files we use [Papa Parse](https://www.papaparse.com/).
 ## Unit tests
 <br />
 
-We use the assertion library [Unit.js](https://unitjs.com/) in the browser with the test framework [Mocha.js](https://mochajs.org/).
-All the tests are stored in the directory "test". **The tests unfortunately only run successfully under Firefox at the moment.** To run these tests, execute `test/index.html` in a browser or follow this [link to view the tests](https://w0lf3n.github.io/Open-Data-Election-Results/test/index.html) online.
+We use the assertion library [Chai](https://www.chaijs.com/) (with the [BDD](https://www.chaijs.com/api/bdd/) style "expect") with the test framework [Mocha](https://mochajs.org/).
+All the tests are stored in the directory "test".
 
 <br />
 <a name="Diagram"></a>

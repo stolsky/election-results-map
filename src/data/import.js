@@ -1,11 +1,12 @@
 /* global Papa */
 
-import {hasProperty, isFunction, isString} from "../../lib/jst/native/typecheck.js";
+import { hasProperty, isFunction, isString } from "../../lib/jst/native/typecheck.js";
 
 
-const fetch_csv = async (url, mode, delimiter, comments, transformHeader) => {
+const fetch_csv = async (url, mode, options) => {
 
-    const response = await fetch(url, {mode});
+    const response = await fetch(url, { mode });
+    let { delimiter, comments, transformHeader } = options;
 
     if (!isString(delimiter)) {
         delimiter = ",";
@@ -21,16 +22,16 @@ const fetch_csv = async (url, mode, delimiter, comments, transformHeader) => {
         transformHeader = null;
     }
 
-    return response.blob().then(file => new Promise(resolve => {
+    return response.blob().then((file) => new Promise((resolve) => {
 
         Papa.parse(new File([file], "temp"), {
             delimiter,
             comments,
             header,
             transformHeader,
-            complete: results => {
+            complete: (results) => {
                 if (results.meta.aborted) {
-                    console.warn("Error loading " + file.name);
+                    console.warn(`Error loading ${file.name}`);
                 } else {
                     resolve(results.data);
                 }
@@ -43,14 +44,14 @@ const fetch_csv = async (url, mode, delimiter, comments, transformHeader) => {
 };
 
 const fetch_json = async (url, mode) => {
-    const response = await fetch(url, {mode});
+    const response = await fetch(url, { mode });
     return response.json();
 };
 
-const load_files = async function (...files) {
+const load_files = async (...files) => {
     if (files instanceof Array) {
         const files_to_be_loaded = [];
-        files.forEach(file => {
+        files.forEach((file) => {
 
             if (hasProperty(file, "name") && isString(file.name)) {
 
@@ -68,22 +69,22 @@ const load_files = async function (...files) {
                         fetch_csv(
                             file.name,
                             mode,
-                            file.delimiter || null,
-                            file.comments || null,
-                            file.transformHeader || null
+                            {
+                                delimiter: file.delimiter || null,
+                                comments: file.comments || null,
+                                transformHeader: file.transformHeader || null
+                            }
                         )
                     );
                 }
 
             }
         });
-        return await Promise.all(files_to_be_loaded);
-    } else {
-        return null;
+        return Promise.all(files_to_be_loaded);
     }
+
+    return null;
 };
 
 
-export {
-    load_files
-};
+export default load_files;
