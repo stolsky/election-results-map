@@ -25,7 +25,7 @@ The voter turnout is visualized with a colored scale representing a turnout betw
 ### Distance of results (Euclidean distance)
 The election result of a region is interpreted as a point (or n-tuple with the length of 5 to 6 in our case). This way we can calculate the difference between two results with the Euclidean distance. Now we can color the difference between the result of one region and the results of all other regions. The colors from yellow to red are used to visualize these differences.
 
-**[View the demo](https://w0lf3n.github.io/Open-Data-Election-Results/)**
+**[View the demo](https://w0lf3n.github.io/Election-Results-Map/)**
 
 <br />
 <a name="Data"></a>
@@ -79,5 +79,5 @@ All the tests are stored in the directory "test".
 ## Class Diagram
 <br />
 
-[current diagram](https://github.com/w0lf3n/Open-Data-Election-Results/issues/22#issuecomment-1086882341)
+[current diagram](https://github.com/w0lf3n/Election-Results-Map/issues/22#issuecomment-1086882341)
 
