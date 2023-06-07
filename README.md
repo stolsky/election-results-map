@@ -1,4 +1,5 @@
-# Open-Data Election Results
+# Election Results Map
+
 A simple application that visualizes election results and their background information in various ways.
 
 <br />
