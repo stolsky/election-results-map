@@ -1,6 +1,6 @@
 # Election Results Map
 
-A simple application that visualizes election results and their background information in various ways.
+Visualization of election results and their analysis of various criteria.
 
 <br />
 
